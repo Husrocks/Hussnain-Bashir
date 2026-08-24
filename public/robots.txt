@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
 
-# TODO: Replace https://YOUR-DOMAIN.com with your real domain once deployed,
+# TODO: Replace https://hussnain-bashir.vercel.app with your real domain once deployed,
 # e.g. "https://hussnain.dev"
-Sitemap: https://YOUR-DOMAIN.com/sitemap-index.xml
+Sitemap: https://hussnain-bashir.vercel.app/sitemap-index.xml
