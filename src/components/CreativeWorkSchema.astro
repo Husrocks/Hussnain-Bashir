@@ -1,0 +1,49 @@
+---
+/**
+ * CreativeWorkSchema — JSON-LD structured data for a project page.
+ *
+ * Inject via <slot name="head"> in projects/[slug].astro.
+ * Data is pulled from content collection frontmatter by the page,
+ * then passed as props to this component.
+ *
+ * Schema.org reference: https://schema.org/CreativeWork
+ */
+interface Props {
+  /** Project title — maps to schema "name" */
+  title: string;
+  /** Project summary — maps to schema "description" */
+  description: string;
+  /** Absolute URL to the project page */
+  url: string;
+  /** Absolute URL to the hero image (optional — property omitted when absent) */
+  image?: string;
+  /** Year the project was completed — used as dateCreated */
+  year: number;
+  /** Site origin URL — used to reference the Person creator */
+  siteUrl: string;
+}
+
+const { title, description, url, image, year, siteUrl } = Astro.props;
+
+const schema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: title,
+  description,
+  url,
+  // dateCreated uses the year from frontmatter; month/day default to Jan 1
+  dateCreated: `${year}-01-01`,
+  creator: {
+    '@type': 'Person',
+    // TODO: Replace YOUR_NAME with your full name (keep in sync with PersonSchema)
+    name: 'YOUR_NAME',
+    url: siteUrl,
+  },
+};
+
+// Only include image property when a heroImage is provided
+if (image) {
+  schema.image = image;
+}
+---
+<script type="application/ld+json" set:html={JSON.stringify(schema, null, 2)} />

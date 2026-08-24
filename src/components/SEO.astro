@@ -1,0 +1,52 @@
+---
+/**
+ * SEO — reusable head meta component.
+ *
+ * Renders all SEO-relevant tags for a page. Inject into pages via the
+ * BaseLayout <slot name="head"> so every page controls its own meta.
+ *
+ * Usage:
+ *   <slot name="head">
+ *     <SEO
+ *       title="Page Title"
+ *       description="Page description."
+ *       canonicalUrl="https://example.com/page"
+ *       type="website"
+ *       ogImage="https://example.com/og.png"
+ *     />
+ *   </slot>
+ */
+interface Props {
+  /** Full page <title> value */
+  title: string;
+  /** Meta description — keep under 160 characters */
+  description: string;
+  /** Absolute canonical URL for this page */
+  canonicalUrl: string;
+  /** Open Graph type */
+  type: 'website' | 'profile' | 'article';
+  /** Absolute URL to the OG image (optional — tag omitted when absent) */
+  ogImage?: string;
+}
+
+const { title, description, canonicalUrl, type, ogImage } = Astro.props;
+---
+<!-- Primary -->
+<title>{title}</title>
+<meta name="description" content={description} />
+
+<!-- Canonical -->
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Open Graph -->
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalUrl} />
+{ogImage && <meta property="og:image" content={ogImage} />}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}

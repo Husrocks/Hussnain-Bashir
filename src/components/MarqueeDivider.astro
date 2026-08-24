@@ -1,0 +1,155 @@
+---
+/**
+ * MarqueeDivider.astro
+ * An infinite scrolling marquee to separate sections visually.
+ */
+
+const items = [
+  "PYTHON", "REACT", "TYPESCRIPT", "FASTAPI", "AGENTIC AI", 
+  "WEBGL", "DOCKER", "SOLIDITY", "MACHINE LEARNING", "LLMS"
+];
+---
+
+<div class="marquee-wrapper">
+  <!-- Giant Background Text -->
+  <div class="bg-text">SKILLS</div>
+
+  <!-- Track 1: Scrolls Left, Rotated slightly up -->
+  <div class="marquee-container track-1">
+    <div class="marquee-track">
+      <div class="marquee-content">
+        {items.map(item => (
+          <span class="marquee-item">{item} <span class="separator">✺</span></span>
+        ))}
+      </div>
+      <div class="marquee-content" aria-hidden="true">
+        {items.map(item => (
+          <span class="marquee-item">{item} <span class="separator">✺</span></span>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Track 2: Scrolls Right, Rotated slightly down -->
+  <div class="marquee-container track-2">
+    <div class="marquee-track reverse">
+      <div class="marquee-content">
+        {items.map(item => (
+          <span class="marquee-item">{item} <span class="separator">✺</span></span>
+        ))}
+      </div>
+      <div class="marquee-content" aria-hidden="true">
+        {items.map(item => (
+          <span class="marquee-item">{item} <span class="separator">✺</span></span>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .marquee-wrapper {
+    position: relative;
+    padding-block: clamp(5rem, 10vh, 8rem);
+    margin-block-start: var(--space-2);
+    margin-block-end: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(10rem, 32vw, 28rem);
+    font-weight: 900;
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+    color: #ffffff;
+    opacity: 0.18;
+    z-index: 15;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .marquee-container {
+    width: 120vw;
+    margin-left: -10vw; /* Bleed off edges */
+    background: var(--color-surface);
+    border-top: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  .track-1 {
+    transform: rotate(-3deg);
+    background: var(--color-accent); /* Give one a vibrant background */
+  }
+  .track-1 .marquee-item {
+    color: var(--color-neutral-900); /* Dark text on bright bg */
+  }
+  .track-1 .separator {
+    color: var(--color-neutral-900);
+  }
+
+  .track-2 {
+    transform: rotate(2deg);
+    margin-top: -3rem; /* Overlap them */
+    background: #111; /* Dark bg */
+    border: 1px solid var(--color-accent-2);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: scroll 30s linear infinite;
+  }
+
+  .marquee-track.reverse {
+    animation-direction: reverse;
+  }
+
+  .marquee-content {
+    display: flex;
+    white-space: nowrap;
+  }
+
+  .marquee-item {
+    font-size: var(--text-3xl);
+    font-weight: 900;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-block: var(--space-4);
+    display: flex;
+    align-items: center;
+  }
+
+  .separator {
+    color: var(--color-accent);
+    /* Perfectly balanced massive spacing on both sides of the star */
+    margin-inline: clamp(2.5rem, 6vw, 5rem);
+    font-size: var(--text-2xl);
+  }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%); /* Scroll exactly one full content block width */
+    }
+  }
+
+  /* Hover to pause */
+  .marquee-container:hover .marquee-track {
+    animation-play-state: paused;
+  }
+</style>

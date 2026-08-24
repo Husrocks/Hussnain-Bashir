@@ -1,0 +1,293 @@
+---
+import ScrambleHeading from './ScrambleHeading.astro';
+---
+
+<section id="education-leadership" class="ed-lead-section">
+  <div class="ed-lead-container">
+    
+    <div class="header-container">
+      <ScrambleHeading text="BACKGROUND" tag="h2" class="section-title" />
+    </div>
+
+    <!-- Education Block -->
+    <div class="timeline-block">
+      <div class="badge-wrapper">
+        <span class="badge badge-primary">Education</span>
+      </div>
+      
+      <div class="timeline-row">
+        <div class="timeline-item">
+          <div class="date-stack">
+            <span class="date-label">Class of</span>
+            <span class="date-year">2023</span>
+          </div>
+          <div class="timeline-node">
+            <div class="node-dot dot-primary"></div>
+          </div>
+          <div class="timeline-content">
+            <div style="display: flex; align-items: center; gap: var(--space-4);">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSj7mCdVj6V6KdggzhuDYy8TA9xFnfpf7wyJZOk6pdI6Q&s=10" alt="IAC Logo" class="institution-logo" />
+              <div>
+                <h4 class="item-title">Bachelor of Science in Computer Science</h4>
+                <p class="item-subtitle">Institute for Art and Culture (IAC) &middot; Lahore, Punjab</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leadership Block -->
+    <div class="timeline-block">
+      <div class="badge-wrapper">
+        <span class="badge badge-secondary">Leadership & Community</span>
+      </div>
+      
+      <div class="timeline-row">
+        <!-- Role 1 -->
+        <div class="timeline-item">
+          <div class="date-stack">
+            <span class="date-label">Jun&ndash;Aug</span>
+            <span class="date-year">2023</span>
+          </div>
+          <div class="timeline-node">
+            <div class="node-dot dot-secondary"></div>
+          </div>
+          <div class="timeline-content">
+            <div style="display: flex; align-items: flex-start; gap: var(--space-4);">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoOMWwgSuU0SNfiCu3UCt7XhgfchlvKR5Yc1SqlJb-qg&s" alt="Lahore Garrison University Logo" class="institution-logo" />
+              <div>
+                <h4 class="item-title">Student Life Ambassador</h4>
+                <p class="item-subtitle">Lahore Garrison University</p>
+                <p class="item-desc">Guided 50+ incoming students through ByteCamp via weekly advisory sessions on academics, career growth, and campus life. Organized 15+ community events.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-row" style="margin-top: var(--space-8);">
+        <!-- Role 2 -->
+        <div class="timeline-item">
+          <div class="date-stack">
+            <span class="date-label">Events</span>
+            <span class="date-year">24/25</span>
+          </div>
+          <div class="timeline-node">
+            <div class="node-dot dot-secondary"></div>
+          </div>
+          <div class="timeline-content">
+            <div style="display: flex; align-items: flex-start; gap: var(--space-4);">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSornjXz7gdXNi2zHVXcSFWxRGVqh4tv5t6XYJaD-SZ7w&s" alt="GDG Cloud Lahore Logo" class="institution-logo" />
+              <div>
+                <h4 class="item-title">Workshops & Events</h4>
+                <p class="item-subtitle">GDG Lahore, Arbisoft, FAST NUCES</p>
+                <p class="item-desc">DevFest '24 & '25 &middot; Build with AI Workshop &middot; TechTehwar &middot; Blockchain Event (IAC).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .ed-lead-section {
+    padding-block-start: clamp(4rem, 8vh, 7rem);
+    padding-block-end: var(--space-8);
+    padding-inline: var(--space-4);
+  }
+
+  .ed-lead-container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .header-container {
+    text-align: center;
+    margin-bottom: clamp(4.5rem, 10vh, 7.5rem);
+  }
+
+  .header-container :global(.section-title),
+  .header-container :global(h2),
+  .ed-lead-section :global(.section-title) {
+    font-size: clamp(3.8rem, 8.5vw, 8.2rem) !important;
+    line-height: 0.88 !important;
+    letter-spacing: -0.035em !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    color: var(--color-text) !important;
+    margin: 0 !important;
+    display: inline-block;
+  }
+
+  /* Blocks */
+  .timeline-block {
+    margin-bottom: var(--space-8);
+  }
+
+  /* Badges */
+  .badge-wrapper {
+    margin-bottom: var(--space-4);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    color: var(--color-bg);
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 6px;
+  }
+
+  .badge-primary {
+    background: var(--color-accent);
+  }
+
+  .badge-secondary {
+    background: var(--color-accent-2);
+  }
+
+  /* Row Layout */
+  .timeline-row {
+    display: flex;
+    align-items: stretch; /* Stretch so the divider matches height */
+    gap: var(--space-6);
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: flex-start;
+    flex: 1;
+    gap: var(--space-3);
+  }
+
+  /* Date Stack */
+  .date-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    min-width: 95px;
+    padding-top: 4px; /* Align visually with title text */
+  }
+
+  .date-label {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    color: var(--color-text-faint);
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .date-year {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    color: var(--color-text);
+    line-height: 1;
+  }
+
+  /* Node Dot */
+  .timeline-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px; /* Optically center with title */
+    margin-inline: var(--space-2);
+  }
+
+  .node-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-primary {
+    background-color: var(--color-accent);
+    box-shadow: 0 0 14px var(--color-accent);
+  }
+
+  .dot-secondary {
+    background-color: var(--color-accent-2);
+    box-shadow: 0 0 14px var(--color-accent-2);
+  }
+
+  /* Content */
+  .timeline-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .item-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  .item-subtitle {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .item-desc {
+    font-size: var(--text-sm);
+    color: var(--color-neutral-200);
+    line-height: 1.6;
+    margin: 10px 0 0 0;
+    max-width: 95%;
+  }
+
+  /* Divider */
+  .vertical-divider {
+    width: 1px;
+    background-color: var(--color-border-strong);
+    margin: 0 var(--space-3);
+  }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    .timeline-row.mobile-stack {
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+    
+    .vertical-divider {
+      display: none;
+    }
+    
+    .date-stack {
+      align-items: flex-start;
+      min-width: 95px;
+    }
+    
+    .item-desc {
+      max-width: 100%;
+    }
+  }
+
+  .institution-logo {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    background: white;
+    padding: 6px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  }
+</style>

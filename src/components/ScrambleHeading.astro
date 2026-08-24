@@ -1,0 +1,230 @@
+---
+/**
+ * ScrambleHeading — scroll-triggered text scramble reveal.
+ *
+ * Renders a heading with the final text server-side (SEO clean, no-JS safe).
+ * When the element scrolls into view, each character cycles rapidly through
+ * a restricted scramble set before locking in to its final value, with a
+ * left-to-right stagger so characters resolve one by one.
+ *
+ * Timing model:
+ *   All characters scramble from t=0. Character i locks at:
+ *     lockTime(i) = (TOTAL_DURATION / numChars) * (i + 1)
+ *   Total duration is constant at 700ms regardless of character count.
+ *   Short headings: wider stagger per char (snappier individual lock).
+ *   Long headings: tighter stagger (sweep effect).
+ *
+ * Trigger: IntersectionObserver, one-shot (unobserve immediately on entry).
+ *   Headings above the fold scramble on load.
+ *   Headings below the fold scramble when they enter the viewport.
+ *
+ * Reduced motion: final text renders as-is. Zero JS runs for the animation.
+ *
+ * Usage:
+ *   <ScrambleHeading text="Hello World" />
+ *   <ScrambleHeading text="About Me" tag="h1" />
+ *   <ScrambleHeading text="Projects" tag="h3" class="section-title" />
+ *
+ * Props:
+ *   text  — the heading text (required)
+ *   tag   — heading level, h1–h6 (default: h2)
+ *   class — additional classes forwarded to the heading element
+ */
+interface Props {
+  /** Heading text content — displayed as-is in SSR, scrambled on client */
+  text: string;
+  /** HTML heading level — defaults to h2 */
+  tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  /** Extra CSS classes to forward to the heading element */
+  class?: string;
+}
+
+const { text, tag: Tag = 'h2', class: className } = Astro.props;
+---
+
+<!--
+  SSR: renders final text. Script replaces character content with spans
+  on the client, but aria-label preserves the accessible name throughout.
+  data-scramble-text is the authoritative source for the script — avoids
+  reading textContent which can have whitespace noise after DOM mutation.
+-->
+<Tag
+  class:list={['scramble-heading', className]}
+  data-scramble
+  data-scramble-text={text}
+  aria-label={text}
+>
+  {text}
+</Tag>
+
+<style>
+  .scramble-heading {
+    /*
+      pre-wrap preserves spaces that are normally collapsed in HTML.
+      Without this, runs of spaces in headings would render as one space
+      both before and after the span-per-character DOM mutation.
+    */
+    white-space: pre-wrap;
+  }
+</style>
+
+<script>
+  // ── Reduced-motion gate ────────────────────────────────────────────────────
+  // Exit before any work. The SSR-rendered final text is already visible.
+  // No spans are created, no rAF loop runs, no IntersectionObserver is set up.
+  const prefersReduced = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches;
+
+  if (!prefersReduced) {
+    // ── Constants ─────────────────────────────────────────────────────────
+    /**
+     * Total scramble duration in ms. Constant regardless of character count —
+     * the stagger adapts to fill this window. Changing this value tunes the
+     * speed for ALL ScrambleHeading instances on the page.
+     */
+    const TOTAL_DURATION = 700;
+
+    /**
+     * Scramble character pool. Uppercase only to contrast with final text.
+     * Symbols chosen for visual interest without excessive noise.
+     * No digits (avoids "password/code" connotation).
+     * No lowercase (contrast with final mixed-case output is part of the effect).
+     */
+    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#@$%&!?';
+    const CHARS_LEN = CHARS.length;
+
+    /**
+     * Characters that are never scrambled — pass through as their final value
+     * from the first frame. Preserving spaces and punctuation keeps word
+     * boundaries visible during the scramble, aiding readability and reducing
+     * visual noise.
+     */
+    const SKIP = new Set([
+      ' ', '\t', '\n', '\u00A0', // whitespace
+      '-', '–', '—',             // dashes
+      '.', ',', ':', ';',        // sentence punctuation
+      '(', ')', '[', ']',        // brackets
+      '/', '\\',                 // slashes
+    ]);
+
+    function randomChar(): string {
+      return CHARS[Math.floor(Math.random() * CHARS_LEN)];
+    }
+
+    /**
+     * scramble — runs the scramble animation on a single heading element.
+     *
+     * Steps:
+     *   1. Read final text from data-scramble-text (not textContent)
+     *   2. Set aria-label BEFORE mutating the DOM
+     *   3. Replace element content with one <span> per character
+     *   4. Start rAF loop: each char shows random chars until its lockTime
+     *   5. rAF loop stops when all chars have settled
+     */
+    function scramble(element: HTMLElement): void {
+      const text = element.dataset.scrambleText ?? '';
+
+      // Unicode-safe split: [...text] handles multi-codepoint characters
+      // correctly (e.g. emoji, accented chars), unlike text.split('').
+      const chars = [...text];
+      const N = chars.length;
+      if (N === 0) return;
+
+      // Time slot per character — all chars scramble for this same duration,
+      // just starting their lock-in at staggered times.
+      const stagger = TOTAL_DURATION / N;
+
+      // ── Set accessible name before DOM mutation ──────────────────────────
+      // aria-label is already set in SSR, but re-asserting here guarantees it
+      // is preserved even if the element's content is being re-rendered by a
+      // framework or HMR during development.
+      element.setAttribute('aria-label', text);
+
+      // ── Build span-per-character DOM ────────────────────────────────────
+      // Using createElement + dataset + textContent (not innerHTML) is safe
+      // for any character including <, >, ", &, and Unicode.
+      element.textContent = ''; // clear SSR text node
+      const spans: HTMLSpanElement[] = chars.map((ch) => {
+        const span = document.createElement('span');
+        // aria-hidden: the parent's aria-label covers the full accessible name.
+        // Individual spans with scrambled content must be hidden from AT.
+        span.setAttribute('aria-hidden', 'true');
+        span.dataset.final = ch;
+        span.textContent = ch; // initial state: show final char, overwritten below
+        element.appendChild(span);
+        return span;
+      });
+
+      const startTime = performance.now();
+
+      // ── rAF loop ─────────────────────────────────────────────────────────
+      function frame(now: number): void {
+        const elapsed = now - startTime;
+        let allSettled = true;
+
+        spans.forEach((span, i) => {
+          const finalChar = span.dataset.final!;
+          // Character i locks in at this elapsed time.
+          const lockTime = stagger * (i + 1);
+
+          if (elapsed >= lockTime || SKIP.has(finalChar)) {
+            // Resolved or pass-through — show final char.
+            // Guard: skip redundant DOM write if already correct.
+            if (span.textContent !== finalChar) {
+              span.textContent = finalChar;
+            }
+          } else {
+            // Still in scramble window — show a random character.
+            span.textContent = randomChar();
+            allSettled = false;
+          }
+        });
+
+        if (!allSettled) {
+          // At least one char is still scrambling — schedule the next frame.
+          requestAnimationFrame(frame);
+        }
+        // When allSettled is true, we simply don't schedule another frame.
+        // The rAF loop terminates naturally — no explicit cancel or cleanup.
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    // ── IntersectionObserver — one-shot scroll trigger ───────────────────
+    let observer: IntersectionObserver;
+
+    document.addEventListener('astro:page-load', () => {
+      observer = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              // Trigger scramble and immediately unobserve.
+              // unobserve() BEFORE scramble() so rapid scroll can't double-fire
+              // if the element enters and exits view within the same frame batch.
+              obs.unobserve(entry.target);
+              scramble(entry.target as HTMLElement);
+            }
+          });
+        },
+        {
+          // Fire when 20% of the element is within the viewport.
+          // Low enough to trigger while the heading is still entering — feels
+          // like it draws in as the user scrolls to it, not after they've passed.
+          threshold: 0.2,
+        },
+      );
+
+      // Observe all scramble headings on this page.
+      document.querySelectorAll<HTMLElement>('[data-scramble]').forEach((el) => {
+        observer.observe(el);
+      });
+    });
+
+    // Cleanup on view transition to avoid memory leaks or ghost triggers
+    document.addEventListener('astro:before-swap', () => {
+      if (observer) observer.disconnect();
+    });
+  }
+</script>

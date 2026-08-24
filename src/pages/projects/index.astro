@@ -1,0 +1,549 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import SEO from '@components/SEO.astro';
+import PersonSchema from '@components/PersonSchema.astro';
+import ScrambleHeading from '@components/ScrambleHeading.astro';
+import { getCollection } from 'astro:content';
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+
+// Fetch all projects
+const allProjects = await getCollection('projects');
+const sortedProjects = allProjects.sort((a, b) => {
+  if (a.data.featured && !b.data.featured) return -1;
+  if (!a.data.featured && b.data.featured) return 1;
+  return b.data.year - a.data.year;
+});
+
+const themeGradients = [
+  {
+    bg: 'linear-gradient(135deg, #09131f 0%, #112240 50%, #00ffcc 100%)',
+    accent: '#00ffcc',
+    tag: 'AI / Supply Chain',
+  },
+  {
+    bg: 'linear-gradient(135deg, #180d2b 0%, #3b1366 50%, #c084fc 100%)',
+    accent: '#c084fc',
+    tag: 'NLP / RAG Summarizer',
+  },
+  {
+    bg: 'linear-gradient(135deg, #1c1303 0%, #3d2605 50%, #ffb800 100%)',
+    accent: '#ffb800',
+    tag: 'Web3 / Smart Contracts',
+  },
+  {
+    bg: 'linear-gradient(135deg, #0a192f 0%, #1e3a8a 50%, #3b82f6 100%)',
+    accent: '#3b82f6',
+    tag: 'NFC / Web Application',
+  },
+  {
+    bg: 'linear-gradient(135deg, #1b0914 0%, #4c0519 50%, #f43f5e 100%)',
+    accent: '#f43f5e',
+    tag: 'CS Theory / Graph AI',
+  },
+  {
+    bg: 'linear-gradient(135deg, #0d1a08 0%, #1c380f 50%, #ccff00 100%)',
+    accent: '#ccff00',
+    tag: 'Fitness / Next.js Web',
+  }
+];
+---
+
+<BaseLayout
+  title="Projects — Hussnain Bashir"
+  description="Explore all projects and intelligent systems built by Hussnain Bashir."
+>
+  <Fragment slot="head">
+    <SEO 
+      title="Projects — Hussnain Bashir"
+      description="Explore all production applications, AI/ML pipelines, and full-stack software built by Hussnain Bashir."
+      canonicalUrl={canonicalUrl}
+      type="website"
+    />
+    <PersonSchema 
+      name="Hussnain Bashir"
+      jobTitle="AI Full-Stack Developer"
+      url={new URL('/', Astro.site).href}
+    />
+  </Fragment>
+
+  <main class="projects-page">
+    <div class="projects-header-wrapper">
+      <ScrambleHeading text="ALL PROJECTS" tag="h1" class="projects-title" />
+      <p class="projects-subtitle">
+        Interactive 3D perspective showcase of machine learning pipelines, autonomous agents, Web3 protocols, and full-stack systems.
+      </p>
+      <div class="projects-meta-bar">
+        <span class="meta-count">{sortedProjects.length} Projects Total</span>
+        <span class="meta-hint">Hover on any card to reveal details & 3D perspective</span>
+      </div>
+    </div>
+
+    <!-- Framer 3D Card Animation Stage -->
+    <div class="framer-3d-stage">
+      <div class="framer-3d-track" id="framerTrack">
+        {sortedProjects.map((project, index) => {
+          const theme = themeGradients[index % themeGradients.length];
+          return (
+            <div 
+              class="framer-3d-card"
+              data-index={index}
+              style={`--card-index: ${index}; --theme-accent: ${theme.accent};`}
+            >
+              <div class="card-3d-surface">
+                <!-- Background visual & decorative elements -->
+                <div class="surface-bg" style={`background: ${theme.bg};`}>
+                  <div class="surface-pattern" aria-hidden="true">
+                    <svg viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="200" cy="150" r="110" stroke={theme.accent} stroke-width="1.5" stroke-dasharray="6 6" opacity="0.35" />
+                      <circle cx="200" cy="150" r="70" stroke={theme.accent} stroke-width="2" opacity="0.45" />
+                      <path d="M40 230 Q 200 110 360 230" stroke={theme.accent} stroke-width="2.5" opacity="0.4" />
+                    </svg>
+                  </div>
+                  <div class="card-number-watermark">0{index + 1}</div>
+                </div>
+
+                <!-- Glass Blur Hover Mask (Reveals on hover) -->
+                <div class="surface-mask"></div>
+
+                <!-- Card Top Bar (Chip & Year) -->
+                <div class="surface-top">
+                  <div class="card-chip">
+                    <span class="chip-dot"></span>
+                    <span class="chip-dot overlap"></span>
+                  </div>
+                  <span class="card-year">{project.data.year || '2026'}</span>
+                </div>
+
+                <!-- Inside Content Info (Reveals on hover) -->
+                <div class="surface-content">
+                  <span class="card-category">{theme.tag || project.data.role}</span>
+                  <h3 class="card-title">{project.data.title}</h3>
+                  <p class="card-summary">{project.data.summary}</p>
+                  
+                  <div class="card-stack-pills">
+                    {project.data.stack.slice(0, 3).map((tech) => (
+                      <span class="stack-pill">{tech}</span>
+                    ))}
+                    {project.data.stack.length > 3 && (
+                      <span class="stack-pill more">+{project.data.stack.length - 3}</span>
+                    )}
+                  </div>
+
+                  <a href={`/projects/${project.data.slug}`} class="card-explore-btn" data-cursor="hover">
+                    <span>Explore Project</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .projects-page {
+    padding-inline: clamp(1.5rem, 4vw, 3rem);
+    padding-block-start: clamp(6rem, 12vh, 9rem);
+    padding-block-end: clamp(6rem, 12vh, 10rem);
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  .projects-header-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: clamp(2rem, 5vh, 4rem);
+    max-width: 840px;
+  }
+
+  .projects-header-wrapper :global(.projects-title),
+  .projects-header-wrapper :global(h1) {
+    font-size: clamp(3.2rem, 7.5vw, 6.8rem) !important;
+    font-weight: 900 !important;
+    line-height: 0.92 !important;
+    letter-spacing: -0.04em !important;
+    color: var(--color-text) !important;
+    text-transform: uppercase !important;
+    margin: 0 0 var(--space-4) 0 !important;
+    display: inline-block;
+  }
+
+  .projects-subtitle {
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .projects-meta-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .meta-count {
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--color-accent-2);
+    background: rgba(0, 255, 204, 0.08);
+    border: 1px solid rgba(0, 255, 204, 0.25);
+    padding: 0.3rem 0.85rem;
+    border-radius: var(--radius-full);
+  }
+
+  .meta-hint {
+    font-size: 0.82rem;
+    color: var(--color-text-faint);
+    font-weight: 500;
+  }
+
+  /* ── Framer 3D Card Animation Stage ── */
+  .framer-3d-stage {
+    width: 100%;
+    padding-block: clamp(2rem, 5vh, 4rem);
+    perspective: 1400px;
+    transform-style: preserve-3d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+  }
+
+  .framer-3d-track {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+    min-height: 520px;
+    transform-style: preserve-3d;
+    padding-inline: 2rem;
+  }
+
+  /* ── 3D Card Initial State (Original Large Size & Fan Overlap: rotateX(-20deg) rotateY(-40deg)) ── */
+  .framer-3d-card {
+    width: 290px;
+    height: 430px;
+    position: relative;
+    margin-left: -65px;
+    transform-style: preserve-3d;
+    transform: rotateX(-20deg) rotateY(-40deg) scale(1) translateZ(0);
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.45s ease,
+                opacity 0.45s ease,
+                box-shadow 0.55s ease,
+                z-index 0.05s ease;
+    z-index: calc(var(--card-index) + 1);
+    cursor: pointer;
+    border-radius: 24px;
+    will-change: transform, filter;
+  }
+
+  .framer-3d-card:first-child {
+    margin-left: 0;
+  }
+
+  /* Sibling Dimming on Stage Hover */
+  .framer-3d-track:has(.framer-3d-card:hover) .framer-3d-card:not(:hover) {
+    filter: brightness(0.48) saturate(0.75);
+    opacity: 0.6;
+    transform: rotateX(-20deg) rotateY(-40deg) scale(0.95);
+  }
+
+  /* Active Hover State (Exact Framer animation: straight, scale 1.22, translateZ 100px) */
+  .framer-3d-card:hover {
+    transform: rotateX(0deg) rotateY(0deg) scale(1.22) translateY(-22px) translateZ(100px) !important;
+    z-index: 80 !important;
+    filter: brightness(1) saturate(1) !important;
+    opacity: 1 !important;
+  }
+
+  /* ── Card 3D Surface ── */
+  .card-3d-surface {
+    width: 100%;
+    height: 100%;
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.65);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.6rem;
+    background: #0d0f17;
+    transition: box-shadow 0.5s ease, border-color 0.5s ease;
+  }
+
+  .framer-3d-card:hover .card-3d-surface {
+    border-color: var(--theme-accent);
+    box-shadow: 0 35px 75px rgba(0, 0, 0, 0.9), 0 0 35px rgba(var(--theme-accent), 0.25);
+  }
+
+  .surface-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .surface-pattern {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.6;
+  }
+
+  .surface-pattern svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-number-watermark {
+    position: absolute;
+    bottom: -15px;
+    right: -10px;
+    font-size: 8rem;
+    font-weight: 900;
+    color: #ffffff;
+    opacity: 0.06;
+    font-family: var(--font-mono);
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* Glass Blur Hover Mask (Frosted Blur Reveal like reference picture) */
+  .surface-mask {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 25%, rgba(8, 10, 16, 0.96) 85%);
+    opacity: 0;
+    transition: opacity 0.45s ease;
+  }
+
+  .framer-3d-card:hover .surface-mask {
+    opacity: 1;
+  }
+
+  /* Top Bar */
+  .surface-top {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-chip {
+    display: flex;
+    align-items: center;
+  }
+
+  .chip-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    display: inline-block;
+  }
+
+  .chip-dot.overlap {
+    margin-left: -8px;
+    opacity: 0.5;
+  }
+
+  .card-year {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.35);
+    padding: 0.22rem 0.6rem;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  /* Bottom Content Info (Reveals only on hover like reference picture!) */
+  .surface-content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-top: auto;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .framer-3d-card:hover .surface-content {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .card-category {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--theme-accent);
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.22;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .card-summary {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-stack-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.2rem;
+  }
+
+  .stack-pill {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .stack-pill.more {
+    color: var(--theme-accent);
+    border-color: var(--theme-accent);
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .card-explore-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0.55rem 0.95rem;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    font-weight: 750;
+    margin-top: 0.4rem;
+    transition: all 0.3s ease;
+  }
+
+  .card-explore-btn:hover {
+    background: var(--theme-accent);
+    color: #000000;
+    border-color: var(--theme-accent);
+    transform: translateY(-2px);
+  }
+
+  /* Responsive Fallback for Tablet & Mobile */
+  @media (max-width: 950px) {
+    .framer-3d-track {
+      flex-wrap: wrap;
+      gap: 2.2rem;
+      perspective: none;
+      padding-top: 1rem;
+    }
+
+    .framer-3d-card {
+      margin-left: 0;
+      transform: none !important;
+      width: 100%;
+      max-width: 380px;
+      height: 400px;
+    }
+
+    .surface-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .surface-mask {
+      opacity: 1;
+    }
+
+    .framer-3d-track:has(.framer-3d-card:hover) .framer-3d-card:not(:hover) {
+      filter: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    .framer-3d-card:hover {
+      transform: translateY(-8px) scale(1.02) !important;
+    }
+  }
+</style>
+
+<script>
+  function setupFramer3DInteraction() {
+    const cards = document.querySelectorAll('.framer-3d-card');
+    
+    cards.forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        if (window.innerWidth < 950) return;
+        const rect = (card as HTMLElement).getBoundingClientRect();
+        const x = (e as MouseEvent).clientX - rect.left - rect.width / 2;
+        const y = (e as MouseEvent).clientY - rect.top - rect.height / 2;
+        
+        const rotateX = (-y / rect.height) * 14;
+        const rotateY = (x / rect.width) * 14;
+        
+        (card as HTMLElement).style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.22) translateY(-22px) translateZ(100px)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        if (window.innerWidth < 950) return;
+        (card as HTMLElement).style.transform = '';
+      });
+    });
+  }
+
+  setupFramer3DInteraction();
+  document.addEventListener('astro:page-load', setupFramer3DInteraction);
+</script>

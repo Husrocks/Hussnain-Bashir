@@ -1,0 +1,269 @@
+---
+/**
+ * CustomCursor — smooth, stateful custom pointer for non-touch devices.
+ *
+ * Renders a single fixed-position wrapper at the root. GSAP's quickTo
+ * updates its transform (x, y) on every mousemove, avoiding per-frame
+ * tween creation overhead.
+ *
+ * Visual states:
+ *   - default: small accent dot
+ *   - link: dot shrinks, large ring expands (data-cursor="link")
+ *   - view: dot/ring hide, pill expands with label (data-cursor="view")
+ *
+ * Disabled completely on touch devices (native pointer is preserved).
+ * Native cursor is only hidden (via body.cursor-active) AFTER JS
+ * confirms non-touch device capabilities.
+ *
+ * Reduced motion: position still tracks cursor (not an animation), but
+ * state transitions (scale/opacity morphing) snap instantly (duration 0).
+ */
+---
+
+<!--
+  Wrapper sits at [top: 0, left: 0] with width/height 0.
+  GSAP quickTo updates x/y directly to mouse coordinates.
+  Inner elements center themselves visually relative to this anchor.
+-->
+<div id="custom-cursor" aria-hidden="true" data-state="default" transition:persist="cursor">
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+  <div class="cursor-pill">
+    <span class="cursor-label">View</span>
+  </div>
+</div>
+
+<style>
+  #custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none; /* Crucial: never block clicks */
+    z-index: 99999; /* Above absolutely everything */
+    /* Hidden until first mousemove to prevent top-left flash */
+    opacity: 0;
+  }
+
+  /* Shared centering for all cursor shapes */
+  .cursor-dot,
+  .cursor-ring,
+  .cursor-pill {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: center center;
+    /* Center within the wrapper; GSAP controls wrapper x/y */
+    transform: translate(-50%, -50%);
+  }
+
+  /* ── Dot (default state) ────────────────────────────────────────────── */
+  .cursor-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+  }
+
+  /* ── Ring (link hover state) ────────────────────────────────────────── */
+  .cursor-ring {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    border: 1.5px solid var(--color-accent);
+    /* Hidden/scaled down by default; GSAP scales it up */
+    opacity: 0;
+    scale: 0.8;
+  }
+
+  /* ── Pill (project card hover state) ────────────────────────────────── */
+  .cursor-pill {
+    height: 28px;
+    padding-inline: var(--space-3);
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    /* Hidden/collapsed by default; GSAP scales X to 1 */
+    opacity: 0;
+    scale: 0;
+  }
+
+  .cursor-label {
+    color: #ffffff;
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    font-family: var(--font-sans);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+</style>
+
+<script>
+  // ── Touch guard ────────────────────────────────────────────────────────
+  // Check if primary pointing device supports hover (mouse/trackpad).
+  // If it doesn't (touch-only), exit entirely. The CSS class 'cursor-active'
+  // is never added to the body, so the native cursor is preserved.
+  const isTouch = window.matchMedia('(hover: none)').matches;
+
+  if (!isTouch) {
+    const { gsap } = await import('gsap');
+
+    // Hide native cursor globally on load and on subsequent page loads
+    // Since Astro swaps the body during view transitions, we must re-apply
+    // this class every time a new page loads.
+    function hideNativeCursor() {
+      document.body.classList.add('cursor-active');
+    }
+    hideNativeCursor();
+    document.addEventListener('astro:page-load', hideNativeCursor);
+
+    // ── Configuration ───────────────────────────────────────────────────
+    const cursor = document.getElementById('custom-cursor')!;
+    const labelEl = document.querySelector<HTMLElement>('.cursor-label')!;
+
+    type CursorState = 'default' | 'link' | 'view';
+    let currentState: CursorState = 'default';
+    let cursorVisible = false;
+
+    // Reduced motion overrides transition times to 0 (instant snap)
+    const prefersReduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    const durBase = prefersReduced ? 0 : 0.3;
+    const durFast = prefersReduced ? 0 : 0.2;
+
+    // ── Position Tracking (quickTo) ─────────────────────────────────────
+    // quickTo is highly optimized for mousemove: updates the tween destination
+    // without creating new tween objects.
+    const moveX = gsap.quickTo(cursor, 'x', {
+      duration: prefersReduced ? 0 : 0.5,
+      ease: 'power3.out',
+    });
+    const moveY = gsap.quickTo(cursor, 'y', {
+      duration: prefersReduced ? 0 : 0.5,
+      ease: 'power3.out',
+    });
+
+    document.addEventListener('mousemove', (e: MouseEvent) => {
+      // Reveal cursor on first movement
+      if (!cursorVisible) {
+        gsap.set(cursor, { opacity: 1 });
+        cursorVisible = true;
+      }
+      moveX(e.clientX);
+      moveY(e.clientY);
+    });
+
+    // ── State Machine ───────────────────────────────────────────────────
+    function setState(state: CursorState, labelText = 'View') {
+      if (state === currentState) return;
+      currentState = state;
+
+      // Single timeline or parallel tweens to morph between states
+      if (state === 'default') {
+        gsap.to('.cursor-dot', {
+          scale: 1,
+          opacity: 1,
+          duration: durBase,
+          ease: 'power2.out',
+        });
+        gsap.to('.cursor-ring', {
+          scale: 0.8,
+          opacity: 0,
+          duration: durBase,
+          ease: 'power2.out',
+        });
+        gsap.to('.cursor-pill', {
+          scaleX: 0,
+          opacity: 0,
+          duration: durBase,
+          ease: 'power2.out',
+        });
+      } else if (state === 'link') {
+        gsap.to('.cursor-dot', {
+          scale: 0.4,
+          opacity: 0.6,
+          duration: durBase,
+          ease: 'power2.out',
+        });
+        gsap.to('.cursor-ring', {
+          scale: 1,
+          opacity: 1,
+          duration: durBase,
+          ease: 'power2.out',
+        });
+        gsap.to('.cursor-pill', {
+          scaleX: 0,
+          opacity: 0,
+          duration: durBase,
+          ease: 'power2.out',
+        });
+      } else if (state === 'view') {
+        // Update label text BEFORE expanding pill
+        labelEl.textContent = labelText;
+
+        gsap.to('.cursor-dot', {
+          scale: 0,
+          opacity: 0,
+          duration: durFast,
+          ease: 'power2.out',
+        });
+        gsap.to('.cursor-ring', {
+          scale: 0.8,
+          opacity: 0,
+          duration: durFast,
+          ease: 'power2.out',
+        });
+        gsap.to('.cursor-pill', {
+          scaleX: 1,
+          opacity: 1,
+          duration: durBase,
+          ease: prefersReduced ? 'none' : 'back.out(2)',
+        });
+      }
+    }
+
+    // ── Event Delegation ────────────────────────────────────────────────
+    // Listen on document, check for data-cursor attributes
+    document.addEventListener('mouseover', (e: MouseEvent) => {
+      const target = (e.target as Element).closest<HTMLElement>(
+        '[data-cursor]',
+      );
+      if (!target) return;
+
+      const type = target.dataset.cursor as 'link' | 'view';
+      const label = target.dataset.cursorLabel ?? 'View';
+      setState(type === 'view' ? 'view' : 'link', label);
+    });
+
+    document.addEventListener('mouseout', (e: MouseEvent) => {
+      const leaving = (e.target as Element).closest<HTMLElement>(
+        '[data-cursor]',
+      );
+      // relatedTarget is the element the mouse is entering
+      const entering = (e.relatedTarget as Element | null)?.closest<HTMLElement>(
+        '[data-cursor]',
+      );
+
+      // Reset to default ONLY if we are leaving a data-cursor zone completely
+      // (not just moving between child elements within the same zone)
+      if (leaving && !entering) {
+        setState('default');
+      }
+    });
+
+    // When navigating to a new page, the cursor DOM element persists.
+    // We should reset its state to default so it doesn't get stuck in a hover state
+    // if the user clicked a link while hovering.
+    document.addEventListener('astro:page-load', () => {
+      setState('default');
+    });
+  }
+</script>

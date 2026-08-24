@@ -1,0 +1,278 @@
+---
+import ScrambleHeading from './ScrambleHeading.astro';
+---
+
+<section id="skills" class="skills-section">
+  <div class="skills-container">
+    <div style="margin-bottom: 3rem;">
+      <ScrambleHeading text="Technical Arsenal" tag="h2" class="section-title" />
+    </div>
+
+    <div class="editor-window">
+      <!-- Editor Header -->
+      <div class="editor-header">
+        <div class="window-controls">
+          <span class="control close"></span>
+          <span class="control minimize"></span>
+          <span class="control maximize"></span>
+        </div>
+        <div class="window-title">hussnain-bashir-skills</div>
+      </div>
+
+      <!-- Editor Tabs -->
+      <div class="editor-tabs">
+        <button class="tab active" data-target="pane-ai">
+          <span class="icon py"></span>ai_ml.py
+        </button>
+        <button class="tab" data-target="pane-agentic">
+          <span class="icon ts"></span>agentic_ai.ts
+        </button>
+        <button class="tab" data-target="pane-fullstack">
+          <span class="icon tsx"></span>full_stack.tsx
+        </button>
+        <button class="tab" data-target="pane-languages">
+          <span class="icon json"></span>languages.json
+        </button>
+      </div>
+
+      <!-- Editor Content -->
+      <div class="editor-content">
+        
+        <!-- Pane 1: ai_ml.py -->
+        <div id="pane-ai" class="pane active">
+<pre><code><span class="keyword">import</span> torch
+<span class="keyword">import</span> cv2
+
+<span class="keyword">class</span> <span class="class-name">MachineLearning</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="variable">self</span>):
+        <span class="variable">self</span>.frameworks = [<span class="string">"PyTorch"</span>, <span class="string">"Hugging Face"</span>, <span class="string">"Scikit-learn"</span>, <span class="string">"Pandas"</span>]
+        <span class="variable">self</span>.vision = [<span class="string">"YOLOv8"</span>, <span class="string">"OpenCV"</span>, <span class="string">"Dlib"</span>]
+        <span class="variable">self</span>.nlp = [<span class="string">"Flan-T5"</span>]
+        <span class="variable">self</span>.tools = [<span class="string">"LightGBM"</span>]</code></pre>
+        </div>
+
+        <!-- Pane 2: agentic_ai.ts -->
+        <div id="pane-agentic" class="pane">
+<pre><code><span class="keyword">interface</span> <span class="class-name">AgenticWorkflow</span> {
+    <span class="property">architectures</span>: <span class="type">string</span>[];
+    <span class="property">tools</span>: <span class="type">string</span>[];
+}
+
+<span class="keyword">const</span> <span class="variable">aiStack</span>: <span class="class-name">AgenticWorkflow</span> = {
+    <span class="property">architectures</span>: [
+        <span class="string">"LangChain"</span>, 
+        <span class="string">"Vector DBs"</span>, 
+        <span class="string">"Embeddings"</span>, 
+        <span class="string">"Transformers"</span>, 
+        <span class="string">"AI Agents"</span>
+    ],
+    <span class="property">tools</span>: [<span class="string">"n8n"</span>, <span class="string">"Prompt Engineering"</span>, <span class="string">"AI Automation"</span>]
+};</code></pre>
+        </div>
+
+        <!-- Pane 3: full_stack.tsx -->
+        <div id="pane-fullstack" class="pane">
+<pre><code><span class="keyword">export const</span> <span class="function">FullStackDeployment</span> = () <span class="keyword">=></span> {
+  <span class="keyword">const</span> <span class="variable">frontend</span> = [<span class="string">"React.js"</span>, <span class="string">"TypeScript"</span>];
+  <span class="keyword">const</span> <span class="variable">backend</span> = [<span class="string">"FastAPI"</span>, <span class="string">"Node.js"</span>, <span class="string">"REST APIs"</span>, <span class="string">"WebSocket"</span>];
+  <span class="keyword">const</span> <span class="variable">devops</span> = [<span class="string">"Docker"</span>, <span class="string">"Nginx"</span>, <span class="string">"Vercel"</span>, <span class="string">"PostgreSQL"</span>, <span class="string">"SQLite"</span>, <span class="string">"Git"</span>];
+  
+  <span class="keyword">return</span> (
+    <span class="tag">&lt;Architecture</span> 
+      <span class="property">client</span>={<span class="variable">frontend</span>} 
+      <span class="property">server</span>={<span class="variable">backend</span>} 
+      <span class="property">infra</span>={<span class="variable">devops</span>} 
+    <span class="tag">/&gt;</span>
+  );
+};</code></pre>
+        </div>
+
+        <!-- Pane 4: languages.json -->
+        <div id="pane-languages" class="pane">
+<pre><code>{
+  <span class="property">"languages"</span>: [
+    <span class="string">"Python"</span>, 
+    <span class="string">"JavaScript"</span>, 
+    <span class="string">"C++"</span>, 
+    <span class="string">"Solidity"</span>, 
+    <span class="string">"SQL"</span>
+  ]
+}</code></pre>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .skills-section {
+    padding-block-start: clamp(12rem, 25vh, 20rem);
+    padding-block-end: var(--space-6);
+    padding-inline: var(--space-4);
+  }
+
+  .skills-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    /* ScrambleHeading might not receive these unless it's global, 
+       but we leave them as fallback. Margin is handled by the wrapper div. */
+    font-size: var(--text-3xl);
+    color: var(--color-text);
+  }
+
+  /* ── Editor Window ── */
+  .editor-window {
+    background: #1e1e1e; /* Classic VS Code Dark */
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    font-family: 'Fira Code', 'Courier New', Courier, monospace;
+  }
+
+  /* Header */
+  .editor-header {
+    display: flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    background: #2d2d2d;
+    border-bottom: 1px solid #181818;
+    position: relative;
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 8px;
+    position: absolute;
+  }
+
+  .control {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .control.close { background: #ff5f56; }
+  .control.minimize { background: #ffbd2e; }
+  .control.maximize { background: #27c93f; }
+
+  .window-title {
+    width: 100%;
+    text-align: center;
+    color: #8b949e;
+    font-size: var(--text-xs);
+    font-family: var(--font-sans);
+  }
+
+  /* Tabs */
+  .editor-tabs {
+    display: flex;
+    background: #252526;
+    overflow-x: auto;
+  }
+
+  .editor-tabs::-webkit-scrollbar {
+    height: 0;
+  }
+
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: var(--space-2) var(--space-4);
+    background: transparent;
+    border: none;
+    border-right: 1px solid #1e1e1e;
+    color: #8b949e;
+    font-size: var(--text-sm);
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .tab:hover {
+    background: #2a2d2e;
+  }
+
+  .tab.active {
+    background: #1e1e1e;
+    color: #c9d1d9;
+    border-top: 2px solid var(--color-accent);
+  }
+
+  /* Icons */
+  .icon {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    border-radius: 2px;
+  }
+  .icon.py { background: #3572A5; }
+  .icon.ts { background: #3178C6; }
+  .icon.tsx { background: #3178C6; }
+  .icon.json { background: #F5A623; }
+
+  /* Content */
+  .editor-content {
+    padding: var(--space-4);
+    overflow-x: auto;
+  }
+
+  .pane {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .pane.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  pre {
+    margin: 0;
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    color: #cccccc;
+  }
+
+  /* Syntax Highlighting */
+  .keyword { color: #569cd6; } /* Blue */
+  .class-name { color: #4ec9b0; } /* Teal */
+  .function { color: #dcdcaa; } /* Yellow */
+  .variable { color: #9cdcfe; } /* Light Blue */
+  .string { color: #ce9178; } /* Orange */
+  .property { color: #9cdcfe; } /* Light Blue */
+  .type { color: #4ec9b0; } /* Teal */
+  .tag { color: #808080; } /* Grey */
+</style>
+
+<script>
+  // Simple tab switching logic that persists across view transitions
+  document.addEventListener('astro:page-load', () => {
+    const tabs = document.querySelectorAll('.tab');
+    const panes = document.querySelectorAll('.pane');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active class from all
+        tabs.forEach(t => t.classList.remove('active'));
+        panes.forEach(p => p.classList.remove('active'));
+
+        // Add active class to clicked tab and corresponding pane
+        tab.classList.add('active');
+        const targetId = tab.getAttribute('data-target');
+        if (targetId) {
+          document.getElementById(targetId)?.classList.add('active');
+        }
+      });
+    });
+  });
+</script>

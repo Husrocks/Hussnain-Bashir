@@ -1,0 +1,160 @@
+---
+import ScrambleHeading from './ScrambleHeading.astro';
+---
+
+<section id="experience" class="experience-section">
+  <div class="experience-container">
+    <div class="header-container">
+      <ScrambleHeading text="EXPERIENCE" tag="h2" class="section-title" />
+    </div>
+
+    <div class="spotlight-group">
+      <!-- Item 1 -->
+      <div class="spotlight-card">
+        <div class="timeline-content">
+          <span class="timeline-date">Jun 2024 &mdash; Sep 2024</span>
+          <h4 class="timeline-role">Machine Learning Engineer Intern</h4>
+          <h5 class="timeline-company">Ovex Tech Pakistan</h5>
+          <ul class="timeline-tasks">
+            <li>Fine-Tuned LLMs (Flan-T5) to optimize natural language understanding models for internal workflows.</li>
+            <li>Trained and optimized YOLOv8 on custom datasets, achieving 90% accuracy in object detection.</li>
+            <li>Automated large-scale data scraping pipelines utilizing Python, Selenium, and OpenCV.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="spotlight-card">
+        <div class="timeline-content">
+          <span class="timeline-date">Feb 2024 &mdash; May 2024</span>
+          <h4 class="timeline-role">Junior Next.js Developer</h4>
+          <h5 class="timeline-company">Geniteam Solutions</h5>
+          <ul class="timeline-tasks">
+            <li>Developed complex front-end components and streamlined state management.</li>
+            <li>Collaborated seamlessly with back-end teams to integrate RESTful APIs.</li>
+            <li>Enhanced overall application performance, accessibility, and responsiveness following modern UI standards.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .experience-section {
+    padding-block-start: var(--space-6);
+    padding-block-end: var(--space-8);
+    padding-inline: var(--space-4);
+  }
+
+  .header-container {
+    text-align: center;
+    margin-bottom: clamp(2.5rem, 6vh, 4.5rem);
+  }
+
+  .header-container :global(.section-title),
+  .header-container :global(h2),
+  .experience-section :global(.section-title) {
+    font-size: clamp(3.8rem, 8.5vw, 8.2rem) !important;
+    line-height: 0.88 !important;
+    letter-spacing: -0.035em !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    color: var(--color-text) !important;
+    margin: 0 !important;
+    display: inline-block;
+  }
+
+  /* Spotlight Cards */
+  .spotlight-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2); /* Extremely tight gap so they sit exactly beneath each other */
+    /* Extra padding at the bottom ensures there is enough scroll room to stack all cards before the next section */
+    padding-bottom: 20vh;
+  }
+
+  .spotlight-card {
+    position: sticky;
+    padding: var(--space-5);
+    background: rgba(10, 10, 12, 0.95); /* Must be mostly opaque to hide stacked cards behind it */
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.5); /* Shadow falling upwards adds to the 3D stack effect */
+  }
+
+  /* Stacking offsets */
+  .spotlight-card:nth-child(1) {
+    top: 120px;
+    z-index: 1;
+  }
+
+  .spotlight-card:nth-child(2) {
+    top: 140px;
+    z-index: 2;
+  }
+
+  /* Spotlight Effect Parent */
+  .spotlight-group:hover .spotlight-card {
+    opacity: 0.3;
+    filter: blur(2px);
+  }
+
+  /* Spotlight Effect Child (Hovered) */
+  .spotlight-group .spotlight-card:hover {
+    opacity: 1;
+    filter: blur(0);
+    border-color: var(--color-accent-2);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 255, 255, 0.1);
+  }
+
+  .timeline-date {
+    display: inline-block;
+    color: var(--color-text-faint);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    margin-bottom: var(--space-2);
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+  }
+
+  .timeline-role {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 2px;
+  }
+
+  .timeline-company {
+    font-size: var(--text-base);
+    color: var(--color-accent);
+    font-weight: 600;
+    margin-bottom: var(--space-3);
+  }
+
+  .timeline-tasks {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .timeline-tasks li {
+    position: relative;
+    padding-left: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    margin-bottom: var(--space-2);
+  }
+
+  .timeline-tasks li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--color-accent-2);
+  }
+</style>

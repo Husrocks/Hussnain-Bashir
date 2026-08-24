@@ -1,0 +1,601 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import SEO from '@components/SEO.astro';
+import CreativeWorkSchema from '@components/CreativeWorkSchema.astro';
+import ScrambleHeading from '@components/ScrambleHeading.astro';
+import MagneticButton from '@components/MagneticButton.astro';
+import { Image } from 'astro:assets';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  const sorted = projects.sort((a, b) => {
+    if (a.data.featured && !b.data.featured) return -1;
+    if (!a.data.featured && b.data.featured) return 1;
+    return b.data.year - a.data.year;
+  });
+
+  return sorted.map((entry, index) => {
+    const nextProject = sorted[(index + 1) % sorted.length];
+    const prevProject = sorted[(index - 1 + sorted.length) % sorted.length];
+    return {
+      params: { slug: entry.data.slug },
+      props: { entry, nextProject, prevProject },
+    };
+  });
+}
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+  nextProject: CollectionEntry<'projects'>;
+  prevProject: CollectionEntry<'projects'>;
+}
+
+const { entry, nextProject, prevProject } = Astro.props;
+const { Content } = await render(entry);
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const pageTitle = `${entry.data.title} — Hussnain Bashir`;
+const ogImage = entry.data.heroImage ? new URL(entry.data.heroImage.src, Astro.site).href : undefined;
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={entry.data.summary}
+  site={Astro.site?.href}
+  ogImage={ogImage}
+>
+  <Fragment slot="head">
+    <SEO
+      title={`${entry.data.title} — Hussnain Bashir`}
+      description={entry.data.summary}
+      canonicalUrl={canonicalUrl}
+      type="article"
+      ogImage={ogImage}
+    />
+    <CreativeWorkSchema
+      name={entry.data.title}
+      description={entry.data.summary}
+      authorName="Hussnain Bashir"
+      url={canonicalUrl}
+      datePublished={new Date(entry.data.year, 0, 1).toISOString()}
+    />
+  </Fragment>
+
+  <main class="project-page-container">
+    <!-- Breadcrumb & Back Link -->
+    <nav class="project-nav-bar" aria-label="Breadcrumb navigation">
+      <a href="/projects" class="back-link" data-cursor="hover">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Back to all projects</span>
+      </a>
+      <span class="nav-divider" aria-hidden="true">/</span>
+      <span class="current-slug">{entry.data.slug}</span>
+    </nav>
+
+    <!-- Main Project Header -->
+    <header class="project-hero-header">
+      <ScrambleHeading text={entry.data.title} tag="h1" class="project-main-title" />
+
+      <p class="project-summary-text">{entry.data.summary}</p>
+      
+      <!-- Meta Information Row -->
+      <div class="project-meta-row">
+        <div class="meta-item">
+          <span class="meta-label">Role</span>
+          <span class="meta-value">{entry.data.role}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Timeline</span>
+          <span class="meta-value">{entry.data.year}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Status</span>
+          <span class="meta-value status-live">
+            <span class="status-pulse"></span>
+            Production Ready
+          </span>
+        </div>
+      </div>
+
+      <!-- Tech Stack Pills -->
+      <div class="project-stack-section">
+        <span class="stack-label">Core Technologies:</span>
+        <ul class="stack-pill-list">
+          {entry.data.stack.map(tech => (
+            <li class="stack-pill-item">{tech}</li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="project-action-bar">
+        {entry.data.liveUrl && (
+          <MagneticButton>
+            <a href={entry.data.liveUrl} target="_blank" rel="noopener noreferrer" data-cursor="hover" class="btn btn-primary">
+              <span>Launch Live Project</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </a>
+          </MagneticButton>
+        )}
+        {entry.data.repoUrl && (
+          <MagneticButton>
+            <a href={entry.data.repoUrl} target="_blank" rel="noopener noreferrer" data-cursor="hover" class="btn btn-secondary">
+              <span>View Source Code</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
+            </a>
+          </MagneticButton>
+        )}
+      </div>
+    </header>
+
+    <!-- Hero Showcase Screenshot -->
+    <div class="project-showcase-container">
+      {entry.data.heroImage ? (
+        <div class:list={['showcase-frame', `frame-${entry.data.slug}`]}>
+          <Image 
+            src={entry.data.heroImage} 
+            alt={`${entry.data.title} Interface Showcase`} 
+            transition:name={`hero-${entry.data.slug}`}
+            class="showcase-image"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+      ) : (
+        <div class="placeholder-showcase" transition:name={`hero-${entry.data.slug}`}>
+          <div class="placeholder-pattern"></div>
+          <span class="placeholder-text">{entry.data.title}</span>
+        </div>
+      )}
+    </div>
+
+    <!-- Technical Case Study Content -->
+    <section class="project-case-study">
+      <div class="case-study-card">
+        <div class="card-header-bar">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">TECHNICAL ARCHITECTURE & IMPLEMENTATION</span>
+        </div>
+        <div class="markdown-body">
+          <Content />
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Gallery (If exists) -->
+    {entry.data.gallery && entry.data.gallery.length > 0 && (
+      <section class="project-gallery-section">
+        <h3 class="gallery-heading">Feature Highlights</h3>
+        <div class="project-gallery-grid">
+          {entry.data.gallery.map((img, index) => (
+            <div class="gallery-item">
+              <Image src={img} alt={`Gallery screenshot ${index + 1} for ${entry.data.title}`} loading="lazy" />
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Next / Prev Project Navigation Footer -->
+    <footer class="project-pagination-footer">
+      <a href={`/projects/${prevProject.data.slug}`} class="pagination-link prev" data-cursor="hover">
+        <span class="nav-subtitle">← Previous Project</span>
+        <span class="nav-title">{prevProject.data.title}</span>
+      </a>
+      <a href={`/projects/${nextProject.data.slug}`} class="pagination-link next" data-cursor="hover">
+        <span class="nav-subtitle">Next Project →</span>
+        <span class="nav-title">{nextProject.data.title}</span>
+      </a>
+    </footer>
+  </main>
+</BaseLayout>
+
+<style>
+  .project-page-container {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding-inline: clamp(1.5rem, 4vw, 3rem);
+    padding-block-start: clamp(6rem, 12vh, 9rem);
+    padding-block-end: clamp(6rem, 12vh, 10rem);
+  }
+
+  /* Breadcrumbs */
+  .project-nav-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: var(--space-6, 2.5rem);
+    font-size: 0.88rem;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-accent-2, #00ffcc);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.25s ease, transform 0.25s ease;
+  }
+
+  .back-link:hover {
+    color: #ffffff;
+    transform: translateX(-4px);
+  }
+
+  .nav-divider {
+    color: var(--color-text-faint, #475569);
+  }
+
+  .current-slug {
+    color: var(--color-text-muted, #94a3b8);
+  }
+
+  /* Header */
+  .project-hero-header {
+    margin-bottom: clamp(3rem, 6vh, 4.5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .project-hero-header :global(.project-main-title),
+  .project-hero-header :global(h1) {
+    font-size: clamp(2.5rem, 5.5vw, 4.2rem) !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.035em !important;
+    line-height: 1.05 !important;
+    color: var(--color-text, #ffffff) !important;
+    margin: 0 0 1.25rem 0 !important;
+    display: block;
+  }
+
+  .project-summary-text {
+    font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+    line-height: 1.6;
+    color: var(--color-text-muted, #cbd5e1);
+    margin: 0 0 2rem 0;
+    max-width: 880px;
+  }
+
+  /* Meta Row */
+  .project-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    padding-block: 1.25rem;
+    border-block: 1px solid rgba(255, 255, 255, 0.08);
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .meta-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    font-family: var(--font-mono, monospace);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-faint, #64748b);
+  }
+
+  .meta-value {
+    font-size: 1rem;
+    font-weight: 750;
+    color: var(--color-text, #ffffff);
+  }
+
+  .meta-value.status-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #10b981;
+  }
+
+  .status-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 10px #10b981;
+    display: inline-block;
+  }
+
+  /* Tech Stack Pills */
+  .project-stack-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    width: 100%;
+  }
+
+  .stack-label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    font-family: var(--font-mono, monospace);
+    color: var(--color-text-faint, #64748b);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .stack-pill-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .stack-pill-item {
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: var(--font-mono, monospace);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full, 9999px);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--color-text, #f1f5f9);
+    transition: all 0.25s ease;
+  }
+
+  .stack-pill-item:hover {
+    border-color: var(--color-accent-2, #00ffcc);
+    background: rgba(0, 255, 204, 0.08);
+    transform: translateY(-2px);
+  }
+
+  /* Actions */
+  .project-action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.8rem;
+    font-size: 0.95rem;
+    font-weight: 800;
+    text-decoration: none;
+    border-radius: var(--radius-full, 9999px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .btn-primary {
+    background: var(--color-accent-2, #00ffcc);
+    color: #030712;
+    border: 1px solid var(--color-accent-2, #00ffcc);
+    box-shadow: 0 0 30px rgba(0, 255, 204, 0.4);
+  }
+
+  .btn-primary:hover {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #000000;
+    box-shadow: 0 0 45px rgba(255, 255, 255, 0.6);
+    transform: translateY(-3px);
+  }
+
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-3px);
+  }
+
+  /* Hero Showcase */
+  .project-showcase-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: clamp(3.5rem, 8vh, 6rem);
+  }
+
+  .showcase-frame {
+    width: 100%;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: #0d0f18;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 50px rgba(0, 255, 204, 0.06);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+  }
+
+  .showcase-frame.frame-tapconnect {
+    max-width: 440px;
+    margin-inline: auto;
+  }
+
+  .showcase-frame:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 35px 90px rgba(0, 0, 0, 0.9), 0 0 60px rgba(0, 255, 204, 0.12);
+  }
+
+  .showcase-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .placeholder-showcase {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, rgba(0, 255, 204, 0.08) 0%, #080a10 70%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .placeholder-text {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text-faint, #64748b);
+  }
+
+  /* Technical Case Study */
+  .project-case-study {
+    margin-bottom: clamp(4rem, 8vh, 6rem);
+  }
+
+  .case-study-card {
+    background: rgba(13, 17, 28, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    backdrop-filter: blur(16px);
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  }
+
+  .card-header-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.1rem 1.6rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .terminal-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+  }
+
+  .terminal-dot.red { background: #ff5f56; }
+  .terminal-dot.yellow { background: #ffbd2e; }
+  .terminal-dot.green { background: #27c93f; }
+
+  .terminal-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    font-family: var(--font-mono, monospace);
+    letter-spacing: 0.12em;
+    color: var(--color-text-muted, #94a3b8);
+    margin-left: 0.5rem;
+  }
+
+  .markdown-body {
+    padding: clamp(1.8rem, 4vw, 3.2rem);
+    color: var(--color-text-muted, #cbd5e1);
+    font-size: 1.1rem;
+    line-height: 1.75;
+  }
+
+  .markdown-body :global(h2) {
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    font-weight: 800;
+    color: var(--color-text, #ffffff);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .markdown-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .markdown-body :global(p) {
+    margin-bottom: 1.4rem;
+  }
+
+  .markdown-body :global(ul) {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .markdown-body :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Pagination Footer */
+  .project-pagination-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .pagination-link {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .pagination-link.next {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .pagination-link:hover {
+    background: rgba(0, 255, 204, 0.04);
+    border-color: rgba(0, 255, 204, 0.3);
+    transform: translateY(-3px);
+  }
+
+  .nav-subtitle {
+    font-size: 0.75rem;
+    font-weight: 800;
+    font-family: var(--font-mono, monospace);
+    color: var(--color-accent-2, #00ffcc);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+
+  .nav-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--color-text, #ffffff);
+    letter-spacing: -0.01em;
+  }
+
+  @media (max-width: 768px) {
+    .project-pagination-footer {
+      grid-template-columns: 1fr;
+    }
+    .pagination-link.next {
+      text-align: left;
+      align-items: flex-start;
+    }
+  }
+</style>

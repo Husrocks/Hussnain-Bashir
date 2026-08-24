@@ -1,0 +1,197 @@
+---
+/**
+ * MagneticButton — magnetic hover effect wrapper.
+ *
+ * Wraps any button or link with a subtle magnetic pull toward the cursor.
+ * The element translates toward the cursor while the mouse is inside an
+ * extended bounding zone, then snaps back with an elastic ease on leave.
+ *
+ * Disabled automatically on:
+ *   • Touch devices (hover: none media query) — no event listeners attached
+ *   • prefers-reduced-motion: reduce — no GSAP, element stays static
+ *
+ * Usage:
+ *   <MagneticButton>
+ *     <a href="/work">View Work</a>
+ *   </MagneticButton>
+ *
+ *   <MagneticButton>
+ *     <button type="submit">Send</button>
+ *   </MagneticButton>
+ *
+ * Multiple instances on a page are fully independent — each gets its own
+ * event listeners and GSAP tween, scoped to its own zone element.
+ *
+ * Layout note:
+ *   The zone uses padding: 32px + margin: -32px to extend the hit area
+ *   without shifting surrounding layout. In flex/grid containers, wrap
+ *   this component in a flex child if negative margins cause issues.
+ *
+ * Tokens consumed: none — translation is geometry-relative (px from center).
+ * GSAP dependency: gsap (already installed; Vite returns the singleton).
+ */
+---
+
+<!--
+  .magnetic-zone: the padded hit area. Mouse events attach here.
+  Padding extends the interactive region beyond the element's own bounds —
+  the magnetic pull activates before the cursor actually reaches the element.
+
+  data-magnetic: JS selector. Decoupled from CSS class names so changes to
+  either selectors don't break the other.
+-->
+<div class="magnetic-zone" data-magnetic>
+  <!--
+    .magnetic-target: the element that physically translates.
+    CRITICAL: this must be a SEPARATE element from the zone.
+    If the moving element were also the event target, translating it would
+    shift its own bounding box, creating jitter as mousemove coordinates
+    become relative to a moving target.
+  -->
+  <div class="magnetic-target">
+    <slot />
+  </div>
+</div>
+
+<style>
+  /* ── Hit zone ────────────────────────────────────────────────────────── */
+  .magnetic-zone {
+    /*
+      inline-block: wraps tightly around slotted content without forcing
+      block-level full-width. Preserves the element's natural inline flow.
+    */
+    display: inline-block;
+    position: relative;
+
+    /*
+      32px padding extends the hover detection zone beyond the element.
+      At a typical 48px-tall button, this gives ~64px of total hit height —
+      the magnet activates before the cursor reaches the button edge.
+
+      Negative margin exactly cancels the padding so neighbouring layout
+      elements are not pushed. The zone is visually invisible — it's purely
+      a pointer-events surface.
+    */
+    padding: 32px;
+    margin: -32px;
+  }
+
+  /* ── Translating element ─────────────────────────────────────────────── */
+  .magnetic-target {
+    /*
+      will-change: transform tells the browser to promote this element to
+      its own compositing layer. Only correct here because we KNOW it will
+      animate — do not add will-change speculatively to other elements.
+    */
+    will-change: transform;
+    /*
+      inline-block preserves the slotted element's natural sizing.
+      A <button> or <a> inside will not stretch to full width.
+    */
+    display: inline-block;
+  }
+</style>
+
+<script>
+  // ── Disable guards ───────────────────────────────────────────────────────
+  // Both checks run before any import — GSAP is not loaded for these users.
+
+  // Touch devices: '(hover: none)' matches when the primary pointing device
+  // cannot hover (i.e., touch-only). More reliable than 'ontouchstart' in
+  // window because it reflects the input device type, not event support.
+  const isTouch = window.matchMedia('(hover: none)').matches;
+  const prefersReduced = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches;
+
+  if (!isTouch && !prefersReduced) {
+    // ── GSAP (Vite singleton) ──────────────────────────────────────────────
+    // Same module path as SmoothScroll.astro → Vite deduplicates to the
+    // same instance. No need to re-configure the ticker.
+    // elastic.out is built into GSAP core — no EasePack import needed.
+    const { gsap } = await import('gsap');
+
+    // ── Constants ─────────────────────────────────────────────────────────
+    // Centralised here so they're easy to tune without hunting through handlers.
+
+    /** Maximum translation distance (px) in any direction. */
+    const MAX_DISTANCE = 8;
+
+    /** How quickly the element tracks the cursor. */
+    const MOVE_DURATION = 0.3;
+    const MOVE_EASE = 'power2.out';
+
+    /**
+     * Snap-back duration. Longer than move so elastic ease has room to breathe.
+     * elastic.out(amplitude, period):
+     *   amplitude 1   = final overshoot equals MAX_DISTANCE (8px) — subtle
+     *   period    0.4 = moderate decay; ~2 oscillations before settling
+     */
+    const SNAP_DURATION = 0.8;
+    const SNAP_EASE = 'elastic.out(1, 0.4)';
+
+    // ── Global Event Delegation ───────────────────────────────────────────
+    // A single set of listeners on the document handles all magnetic zones
+    // across all pages. Because listeners are on the document, they survive
+    // Astro View Transitions seamlessly without needing re-initialization.
+
+    document.addEventListener('mousemove', (e: MouseEvent) => {
+      const zone = (e.target as Element).closest<HTMLElement>('[data-magnetic]');
+      if (!zone) return;
+
+      const target = zone.querySelector<HTMLElement>('.magnetic-target');
+      if (!target) return;
+
+      /*
+        getBoundingClientRect() is called here, NOT cached at init time.
+        Layout can shift between interactions (accordion opens, modal closes,
+        etc.), so a cached rect would silently use stale coordinates.
+        One rect query per mousemove is negligible on modern hardware.
+      */
+      const rect = target.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      /*
+        Normalise offset to the element's own dimensions before applying
+        MAX_DISTANCE. This keeps the translation ratio consistent across
+        different button sizes — a tiny icon button and a wide pill button
+        both feel equally subtle.
+      */
+      const offsetX = ((e.clientX - centerX) / rect.width) * MAX_DISTANCE;
+      const offsetY = ((e.clientY - centerY) / rect.height) * MAX_DISTANCE;
+
+      gsap.to(target, {
+        x: offsetX,
+        y: offsetY,
+        duration: MOVE_DURATION,
+        ease: MOVE_EASE,
+        /*
+          overwrite: 'auto' cancels any in-progress tween that targets the
+          same properties. Without this, rapid cursor movement or re-entering
+          during a snap-back would queue competing tweens, causing jitter.
+        */
+        overwrite: 'auto',
+      });
+    });
+
+    document.addEventListener('mouseout', (e: MouseEvent) => {
+      const leaving = (e.target as Element).closest<HTMLElement>('[data-magnetic]');
+      const entering = (e.relatedTarget as Element | null)?.closest<HTMLElement>('[data-magnetic]');
+
+      // Only snap back if we are completely leaving this specific magnetic zone
+      if (leaving && leaving !== entering) {
+        const target = leaving.querySelector<HTMLElement>('.magnetic-target');
+        if (!target) return;
+
+        gsap.to(target, {
+          x: 0,
+          y: 0,
+          duration: SNAP_DURATION,
+          ease: SNAP_EASE,
+          overwrite: 'auto',
+        });
+      }
+    });
+  }
+</script>

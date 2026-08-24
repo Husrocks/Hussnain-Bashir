@@ -1,0 +1,725 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import SEO from '@components/SEO.astro';
+import PersonSchema from '@components/PersonSchema.astro';
+import ScrambleHeading from '@components/ScrambleHeading.astro';
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+---
+<BaseLayout
+  title="About — Portfolio"
+  description="Background, experience, and approach."
+>
+  <Fragment slot="head">
+    <SEO 
+      title="About — Hussnain Bashir"
+      description="Learn more about Hussnain Bashir, an AI Full-Stack Developer specializing in building end-to-end intelligent systems."
+      canonicalUrl={canonicalUrl}
+      type="profile"
+    />
+    <PersonSchema 
+      name="Hussnain Bashir"
+      jobTitle="AI Full-Stack Developer"
+      url={new URL('/', Astro.site).href}
+    />
+  </Fragment>
+
+  <section class="about-section">
+    <div class="about-hero">
+      <div class="about-hero-text">
+        <ScrambleHeading text="ABOUT ME" tag="h1" class="about-title" />
+        <div class="about-text">
+          <p>
+            I am an AI/ML and Full-Stack Developer specializing in building end-to-end intelligent systems, from fine-tuning LLMs and deploying computer vision pipelines to developing blockchain DApps with Solidity.
+          </p>
+          <p>
+            I am highly proficient in Python, React.js, FastAPI, and C++, with a proven track record of leveraging AI, Web3, and automation to architect scalable, production-ready solutions.
+          </p>
+        </div>
+      </div>
+
+      <div class="about-image-wrapper">
+        <div class="image-glow"></div>
+        <img 
+          src="/images/about.webp?v=4" 
+          alt="Hussnain Bashir" 
+          class="about-image"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+    </div>
+    
+    <div class="about-content">
+      <!-- Skills Section Block -->
+      <div class="skills-section-block">
+        <div class="skills-header">
+          <ScrambleHeading text="TECHNICAL ARSENAL" tag="h2" class="skills-title" />
+          <p class="skills-subtitle">Core technologies, frameworks, and architectures I leverage to build scalable intelligent systems.</p>
+        </div>
+
+        <div class="skills-cards-grid">
+          <!-- 1. Languages Card -->
+          <div class="skill-category-card card-cyan">
+            <div class="category-glow"></div>
+            <div class="category-header">
+              <div class="category-icon icon-cyan">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+              </div>
+              <div class="category-info">
+                <h3>Languages</h3>
+                <span class="category-count">5 Core Technologies</span>
+              </div>
+            </div>
+            <div class="skill-pills">
+              <span>Python</span>
+              <span>JavaScript</span>
+              <span>C++</span>
+              <span>Solidity</span>
+              <span>SQL</span>
+            </div>
+          </div>
+
+          <!-- 2. AI / ML Card -->
+          <div class="skill-category-card card-purple">
+            <div class="category-glow"></div>
+            <div class="category-header">
+              <div class="category-icon icon-purple">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a4 4 0 0 1 4 4c0 .73-.2 1.41-.54 2H18a4 4 0 0 1 4 4c0 1.25-.57 2.36-1.46 3.09.29.6.46 1.28.46 1.91a4 4 0 0 1-4 4h-1c-.5 1.74-2.09 3-4 3s-3.5-1.26-4-3H8a4 4 0 0 1-4-4c0-.63.17-1.31.46-1.91A3.99 3.99 0 0 1 3 12a4 4 0 0 1 4-4h2.54A3.99 3.99 0 0 1 9 6a4 4 0 0 1 3-4z"></path>
+                </svg>
+              </div>
+              <div class="category-info">
+                <h3>AI / ML</h3>
+                <span class="category-count">9 Frameworks & Tools</span>
+              </div>
+            </div>
+            <div class="skill-pills">
+              <span>PyTorch</span>
+              <span>LightGBM</span>
+              <span>Dlib</span>
+              <span>YOLOv8</span>
+              <span>OpenCV</span>
+              <span>Flan-T5</span>
+              <span>Hugging Face</span>
+              <span>Scikit-learn</span>
+              <span>Pandas</span>
+            </div>
+          </div>
+
+          <!-- 3. NLP / RAG / Agentic AI Card -->
+          <div class="skill-category-card card-amber">
+            <div class="category-glow"></div>
+            <div class="category-header">
+              <div class="category-icon icon-amber">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+                </svg>
+              </div>
+              <div class="category-info">
+                <h3>NLP / RAG / Agents</h3>
+                <span class="category-count">9 Advanced Systems</span>
+              </div>
+            </div>
+            <div class="skill-pills">
+              <span>LangChain</span>
+              <span>Vector DBs</span>
+              <span>Embeddings</span>
+              <span>Transformers</span>
+              <span>AI Agents</span>
+              <span>Agentic Workflows</span>
+              <span>AI Automation</span>
+              <span>n8n</span>
+              <span>Prompt Engineering</span>
+            </div>
+          </div>
+
+          <!-- 4. Full-Stack & DevOps Card -->
+          <div class="skill-category-card card-blue">
+            <div class="category-glow"></div>
+            <div class="category-header">
+              <div class="category-icon icon-blue">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                  <polyline points="2 17 12 22 22 17"></polyline>
+                  <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+              </div>
+              <div class="category-info">
+                <h3>Full-Stack & DevOps</h3>
+                <span class="category-count">12 Tools & Stacks</span>
+              </div>
+            </div>
+            <div class="skill-pills">
+              <span>React.js</span>
+              <span>TypeScript</span>
+              <span>FastAPI</span>
+              <span>Node.js</span>
+              <span>REST APIs</span>
+              <span>WebSocket</span>
+              <span>Docker</span>
+              <span>Nginx</span>
+              <span>Vercel</span>
+              <span>PostgreSQL</span>
+              <span>SQLite</span>
+              <span>Git</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="experience-education">
+        <!-- Experience Row -->
+        <div class="timeline-section-block">
+          <h2>Experience</h2>
+          <div class="experience-card">
+            <div class="experience-image-wrapper">
+              <img 
+                src="/images/lgu_ambassador.webp" 
+                alt="Student Life Ambassador Experience" 
+                class="experience-image"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="experience-details">
+              <h3>Student Life Ambassador (Summer Internship)</h3>
+              <span class="meta">Lahore Garrison University (LGU) | June 2023 – August 2023</span>
+              <ul>
+                <li>Guided 50+ incoming students through the ByteCamp program by leading weekly advisory sessions on academics, career growth, and campus life.</li>
+                <li>Organized 15+ community events that helped over 200 new students acclimate to university culture and build lasting peer networks.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Education Row -->
+        <div class="timeline-section-block">
+          <h2>Education</h2>
+          <div class="education-card">
+            <div class="education-building-image-wrapper">
+              <img 
+                src="/images/logo.webp?v=1" 
+                alt="Institute for Art and Culture Logo" 
+                class="cover-logo-image"
+                loading="eager"
+                decoding="async"
+              />
+              <img 
+                src="/images/building.webp?v=1" 
+                alt="Institute for Art and Culture Campus" 
+                class="building-hover-image"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+            <div class="education-details">
+              <div>
+                <h3>Bachelor of Science in Computer Science</h3>
+                <span class="meta">Institute for Art and Culture (IAC) | Lahore, Punjab</span>
+                <p class="concentration-text">Concentration: Artificial Intelligence · ML · NLP · Web Applications</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-section {
+    padding-inline: var(--space-4);
+    padding-block: var(--space-6);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .about-hero {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: var(--space-6);
+    align-items: center;
+    margin-block-end: var(--space-7);
+  }
+
+  .about-hero-text :global(.about-title),
+  .about-hero-text :global(h1),
+  .about-section :global(.about-title) {
+    font-size: clamp(3.2rem, 6.8vw, 6.2rem) !important;
+    line-height: 0.9 !important;
+    letter-spacing: -0.04em !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    color: var(--color-text) !important;
+    margin-block-end: var(--space-4) !important;
+    display: inline-block;
+  }
+
+  .about-text p {
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-3);
+  }
+
+  .about-image-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .image-glow {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(circle, rgba(0, 255, 204, 0.22) 0%, rgba(138, 43, 226, 0.22) 50%, transparent 70%);
+    filter: blur(40px);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .about-image {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 340px;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+
+  .about-image:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+  }
+
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  @media (max-width: 850px) {
+    .about-hero {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: var(--space-5);
+    }
+  }
+
+  /* ── Technical Arsenal Section ── */
+  .skills-section-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    margin-block-start: var(--space-3);
+  }
+
+  .skills-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .skills-header :global(.skills-title),
+  .skills-header :global(h2) {
+    font-size: clamp(2.4rem, 5vw, 3.8rem) !important;
+    font-weight: 900 !important;
+    line-height: 0.92 !important;
+    letter-spacing: -0.035em !important;
+    text-transform: uppercase !important;
+    color: var(--color-text) !important;
+    margin: 0 !important;
+  }
+
+  .skills-subtitle {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    max-width: 680px;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .skills-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--space-5);
+  }
+
+  .skill-category-card {
+    position: relative;
+    background: rgba(14, 15, 20, 0.7);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: clamp(1.4rem, 3vw, 1.85rem);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  }
+
+  .skill-category-card:hover {
+    transform: translateY(-6px) scale(1.015);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Card Accent Themes */
+  .card-cyan {
+    border-top: 2px solid #00ffcc;
+  }
+  .card-cyan:hover {
+    border-color: rgba(0, 255, 204, 0.5);
+    box-shadow: 0 25px 50px rgba(0, 255, 204, 0.12);
+  }
+
+  .card-purple {
+    border-top: 2px solid #a855f7;
+  }
+  .card-purple:hover {
+    border-color: rgba(168, 85, 247, 0.5);
+    box-shadow: 0 25px 50px rgba(168, 85, 247, 0.12);
+  }
+
+  .card-amber {
+    border-top: 2px solid #ffb800;
+  }
+  .card-amber:hover {
+    border-color: rgba(255, 184, 0, 0.5);
+    box-shadow: 0 25px 50px rgba(255, 184, 0, 0.12);
+  }
+
+  .card-blue {
+    border-top: 2px solid #3b82f6;
+  }
+  .card-blue:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 25px 50px rgba(59, 130, 246, 0.12);
+  }
+
+  .category-glow {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    filter: blur(50px);
+    opacity: 0.25;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .card-cyan .category-glow { background: #00ffcc; }
+  .card-purple .category-glow { background: #a855f7; }
+  .card-amber .category-glow { background: #ffb800; }
+  .card-blue .category-glow { background: #3b82f6; }
+
+  .skill-category-card:hover .category-glow {
+    opacity: 0.45;
+    transform: scale(1.3);
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    position: relative;
+    z-index: 2;
+  }
+
+  .category-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .category-info h3 {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .category-count {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .category-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  .skill-category-card:hover .category-icon {
+    transform: rotate(6deg) scale(1.08);
+  }
+
+  .icon-cyan {
+    background: rgba(0, 255, 204, 0.12);
+    color: #00ffcc;
+    border: 1px solid rgba(0, 255, 204, 0.3);
+  }
+
+  .icon-purple {
+    background: rgba(168, 85, 247, 0.12);
+    color: #c084fc;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+  }
+
+  .icon-amber {
+    background: rgba(255, 184, 0, 0.12);
+    color: #ffb800;
+    border: 1px solid rgba(255, 184, 0, 0.3);
+  }
+
+  .icon-blue {
+    background: rgba(59, 130, 246, 0.12);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+
+  .skill-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .skill-pills span {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.3rem 0.75rem;
+    border-radius: 14px;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card-cyan .skill-pills span:hover {
+    color: #ffffff;
+    border-color: rgba(0, 255, 204, 0.5);
+    background: rgba(0, 255, 204, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 255, 204, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .card-purple .skill-pills span:hover {
+    color: #ffffff;
+    border-color: rgba(168, 85, 247, 0.5);
+    background: rgba(168, 85, 247, 0.1);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .card-amber .skill-pills span:hover {
+    color: #ffffff;
+    border-color: rgba(255, 184, 0, 0.5);
+    background: rgba(255, 184, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(255, 184, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .card-blue .skill-pills span:hover {
+    color: #ffffff;
+    border-color: rgba(59, 130, 246, 0.5);
+    background: rgba(59, 130, 246, 0.1);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .experience-education {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    margin-block-start: var(--space-4);
+  }
+
+  .timeline-section-block h2 {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    margin-block-end: var(--space-3);
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+
+  .experience-card,
+  .education-card {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    align-items: stretch;
+  }
+
+  .experience-card:hover,
+  .education-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+  }
+
+  .experience-image-wrapper,
+  .education-building-image-wrapper {
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+    overflow: hidden;
+    position: relative;
+    border-right: 1px solid var(--glass-border);
+  }
+
+  .education-building-image-wrapper {
+    background: #ffffff;
+  }
+
+  .experience-image-wrapper {
+    background: #0f1117;
+  }
+
+  .experience-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.5s ease;
+  }
+
+  .experience-card:hover .experience-image {
+    transform: scale(1.05);
+  }
+
+  .cover-logo-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 1.5rem;
+    background: #ffffff;
+    opacity: 1;
+    z-index: 2;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .building-hover-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    opacity: 0;
+    z-index: 1;
+    transform: scale(1.08);
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .education-card:hover .cover-logo-image {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  .education-card:hover .building-hover-image {
+    opacity: 1;
+    z-index: 3;
+    transform: scale(1.02);
+  }
+
+  .experience-details,
+  .education-details {
+    padding: clamp(1.25rem, 3vw, 2rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .experience-details h3,
+  .education-details h3 {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    margin-block-end: var(--space-1);
+    color: var(--color-accent-2);
+    letter-spacing: -0.01em;
+  }
+
+  .experience-details .meta,
+  .education-details .meta {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--color-text-faint);
+    margin-block-end: var(--space-3);
+  }
+
+  .experience-details ul {
+    list-style: disc;
+    padding-inline-start: var(--space-4);
+    margin: 0;
+  }
+
+  .experience-details li {
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-2);
+  }
+
+  .experience-details li:last-child {
+    margin-block-end: 0;
+  }
+
+  .concentration-text {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .experience-card,
+    .education-card {
+      grid-template-columns: 1fr;
+    }
+
+    .experience-image-wrapper,
+    .education-building-image-wrapper {
+      height: 200px;
+      min-height: 200px;
+      border-right: none;
+      border-bottom: 1px solid var(--glass-border);
+    }
+  }
+</style>

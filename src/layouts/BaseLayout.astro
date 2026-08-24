@@ -1,0 +1,112 @@
+---
+/**
+ * BaseLayout — master page layout.
+ *
+ * Every page wraps its content in this layout.
+ * Handles the full document structure: <html>, <head>, skip link,
+ * <header>, <main>, <footer>.
+ *
+ * Props:
+ *   title       — page title, forwarded to the head slot caller for SEO.astro
+ *   description — meta description, forwarded to the head slot caller
+ *   site        — site origin URL, e.g. "https://example.com"
+ *                 used by pages to construct canonical / OG URLs
+ *   ogImage     — optional absolute URL to OG image, forwarded to caller
+ *
+ * Slots:
+ *   default — page body content inside <main>
+ *   head    — per-page <head> content: SEO.astro, JSON-LD schemas, etc.
+ *             NOTE: <title> and <meta name="description"> must be rendered
+ *             inside this slot (via SEO.astro) — BaseLayout intentionally
+ *             does NOT render them to avoid duplicates.
+ */
+import SkipLink from '@components/SkipLink.astro';
+import SiteHeader from '@components/SiteHeader.astro';
+import SiteFooter from '@components/SiteFooter.astro';
+import CustomCursor from '@components/CustomCursor.astro';
+import SmoothScroll from '@components/SmoothScroll.astro';
+import { ClientRouter } from 'astro:transitions';
+import '@styles/base.css';
+
+interface Props {
+  /** Page title — used by the page's SEO.astro in the head slot */
+  title: string;
+  /** Meta description — used by the page's SEO.astro in the head slot */
+  description: string;
+  /**
+   * Site origin URL (no trailing slash), e.g. "https://example.com".
+   * Pages use this to construct canonical URLs passed to SEO.astro.
+   * Defaults to a placeholder until a real domain is set.
+   */
+  site?: string;
+  /** Optional absolute URL to an OG/Twitter card image */
+  ogImage?: string;
+}
+
+const {
+  title,
+  description,
+  site = 'YOUR_SITE_URL',
+  ogImage,
+} = Astro.props;
+
+// Expose to pages via slot props if needed — currently unused at layout level.
+// Pages construct their own canonical URLs using the `site` prop they pass in.
+void title;
+void description;
+void site;
+void ogImage;
+---
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <!-- Character encoding — must be first -->
+    <meta charset="utf-8" />
+
+    <!-- Viewport — required for responsive layouts -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Generator tag (Astro default) -->
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Fonts -->
+    <link rel="preload" href="/fonts/inter-variable.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!--
+      Per-page head content: SEO.astro (title, description, OG, Twitter,
+      canonical), JSON-LD schemas, additional link/meta tags.
+      Pages MUST inject <SEO> here — BaseLayout does not render <title>
+      or <meta name="description"> to prevent duplication.
+    -->
+    <ClientRouter />
+    <slot name="head" />
+  </head>
+
+  <body>
+    <!--
+      Skip link must be the FIRST focusable element in <body>.
+      It becomes visible on keyboard focus and lands on #main-content.
+    -->
+    <SkipLink />
+
+    <SiteHeader />
+
+    <!--
+      tabindex="-1" allows programmatic focus (e.g. after client-side
+      navigation) without placing <main> in the tab order.
+    -->
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+
+    <SiteFooter />
+
+    <CustomCursor />
+
+    <!--
+      Scroll engine — Lenis + GSAP ScrollTrigger, gated behind
+      prefers-reduced-motion. Renders no HTML; only emits a bundled script.
+    -->
+    <SmoothScroll />
+  </body>
+</html>

@@ -1,0 +1,105 @@
+---
+/**
+ * SmoothScroll — scroll engine initializer.
+ *
+ * Renders nothing to the DOM. Its only output is a bundled client-side
+ * script that initializes Lenis smooth scroll and wires it to GSAP's
+ * ScrollTrigger via a shared requestAnimationFrame loop.
+ *
+ * Behaviour:
+ *   - prefers-reduced-motion: reduce  → exits immediately; no libraries
+ *     loaded; native scroll behavior; no GSAP ticker running.
+ *   - All other cases → Lenis initialized, GSAP ScrollTrigger synced.
+ *
+ * Placement: last element in <body> inside BaseLayout.astro.
+ * The script is type="module" (Astro default) so it is deferred and
+ * non-blocking regardless of DOM position.
+ *
+ * Future use:
+ *   window.__lenis  — the Lenis instance, accessible by any island that
+ *                     needs to pause/resume scroll (e.g. modals, drawers).
+ */
+---
+<script>
+  // ─── Motion preference gate ─────────────────────────────────────────────
+  // Check BEFORE importing anything. If reduced motion is preferred:
+  //   • Lenis is never loaded
+  //   • GSAP is never loaded
+  //   • The browser's native scroll behavior is used as-is
+  const prefersReduced = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches;
+
+  if (!prefersReduced) {
+    // ─── Dynamic imports ─────────────────────────────────────────────────
+    // Only fetched by the browser when motion is NOT reduced.
+    // Vite will code-split these into a separate chunk.
+    const [{ default: Lenis }, { gsap }, { ScrollTrigger }] =
+      await Promise.all([
+        import('lenis'),
+        import('gsap'),
+        import('gsap/ScrollTrigger'),
+      ]);
+
+    // ─── GSAP setup ───────────────────────────────────────────────────────
+    // Register ScrollTrigger with GSAP so it can be used by any animation
+    // added later without re-registering.
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ─── Lenis initialization ─────────────────────────────────────────────
+    const lenis = new Lenis({
+      // How many seconds a full scroll gesture takes to settle.
+      duration: 1.2,
+      // Exponential ease-out — fast start, smooth landing.
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      // Smooth mouse-wheel scroll (touch devices use native momentum).
+      smoothWheel: true,
+    });
+
+    // ─── ScrollTrigger sync ───────────────────────────────────────────────
+    // Lenis fires this on every scroll tick with the smoothed position.
+    // Calling ScrollTrigger.update() here ensures scroll-linked GSAP
+    // animations read the smoothed position, not the raw window scroll.
+    // lenis.on('scroll', () => ScrollTrigger.update()); // (We'll use gsap.ticker instead)
+
+    // ─── ScrollTrigger View Transitions lifecycle ──────────────────────────
+    // When Astro swaps the page, old elements are destroyed. We must kill
+    // their associated ScrollTriggers to prevent memory leaks and errors.
+    document.addEventListener('astro:before-swap', () => {
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+    });
+    // When the new page loads, tell ScrollTrigger to calculate positions
+    // for the newly mounted DOM elements.
+    document.addEventListener('astro:page-load', () => {
+      ScrollTrigger.refresh();
+    });
+
+    // ─── Unified RAF loop ─────────────────────────────────────────────────
+    // A single requestAnimationFrame loop drives both Lenis and GSAP.
+    // We hook Lenis into GSAP's ticker to ensure they stay perfectly in sync,
+    // and standard GSAP animations (like cursor/hovers) continue to function.
+    gsap.ticker.add((time: number) => {
+      lenis.raf(time * 1000);
+    });
+
+    // Disable GSAP's lag smoothing so it doesn't conflict with Lenis
+    gsap.ticker.lagSmoothing(0, 0);
+
+    // ─── Global instance reference ────────────────────────────────────────
+    // Makes the Lenis instance accessible to future client islands without
+    // prop-drilling or a shared store. Convention: __lenis.
+    (window as Window & typeof globalThis & { __lenis?: typeof lenis }).__lenis =
+      lenis;
+
+    // ─── Background-tab optimization ─────────────────────────────────────
+    // Stop the raf loop when the page is not visible (hidden tab) to avoid
+    // wasting CPU. Resume immediately when the tab becomes active again.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        lenis.stop();
+      } else {
+        lenis.start();
+      }
+    });
+  }
+</script>

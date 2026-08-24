@@ -1,0 +1,194 @@
+---
+/**
+ * HeroGrain.astro
+ *
+ * An interactive, lightweight WebGL noise overlay for the hero image.
+ * Renders a procedural hash noise that slowly evolves and shifts based
+ * on the mouse position.
+ *
+ * Feature detection guards prevent initialization on mobile/touch,
+ * devices preferring reduced motion, or low-memory/low-concurrency
+ * hardware to preserve battery and performance.
+ */
+---
+
+<!-- The canvas is absolutely positioned via scoped CSS to cover its parent -->
+<canvas data-ogl-grain aria-hidden="true" class="hero-grain"></canvas>
+
+<style>
+  .hero-grain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Let clicks/hovers pass through to the image/link */
+    mix-blend-mode: overlay; /* Blends the black/white noise as grain */
+    opacity: 0; /* Fade in via JS once initialized */
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .hero-grain.is-initialized {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  // Evaluate the motion, interaction, and hardware limits before doing anything.
+  const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = window.matchMedia('(pointer: coarse)').matches;
+  
+  // navigator.deviceMemory and hardwareConcurrency are not supported in all browsers,
+  // so we use optional chaining and logical defaults.
+  const isLowEnd = 
+    ((navigator as any).deviceMemory && (navigator as any).deviceMemory < 4) ||
+    (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4);
+
+  if (!isReduced && !isMobile && !isLowEnd) {
+    
+    // Using a dynamic import for OGL ensures the library isn't bundled 
+    // into the critical JS payload, and only fetched if the device passes tests.
+    document.addEventListener('astro:page-load', async () => {
+      const canvas = document.querySelector<HTMLCanvasElement>('[data-ogl-grain]');
+      if (!canvas) return;
+
+      const { Renderer, Program, Mesh, Triangle } = await import('ogl');
+
+      // Setup Renderer
+      const renderer = new Renderer({
+        canvas,
+        alpha: true,
+        depth: false,
+        antialias: false,
+      });
+      const gl = renderer.gl;
+
+      // Full screen triangle geometry
+      const geometry = new Triangle(gl);
+
+      // Procedural Noise Shader
+      const program = new Program(gl, {
+        vertex: `
+          attribute vec2 position;
+          varying vec2 vUv;
+          void main() {
+            vUv = position * 0.5 + 0.5;
+            gl_Position = vec4(position, 0.0, 1.0);
+          }
+        `,
+        fragment: `
+          precision highp float;
+          uniform float uTime;
+          uniform vec2 uMouse;
+          varying vec2 vUv;
+
+          // Fast procedural hash noise
+          float hash(vec2 p) {
+            vec3 p3  = fract(vec3(p.xyx) * .1031);
+            p3 += dot(p3, p3.yzx + 33.33);
+            return fract((p3.x + p3.y) * p3.z);
+          }
+
+          void main() {
+            // Apply mouse offset and scale coordinates
+            vec2 p = gl_FragCoord.xy + uMouse * 20.0;
+            
+            // Evolve noise using uTime
+            float n = hash(p + uTime * 60.0);
+
+            // Output a neutral grey with a modulated alpha channel
+            // mix-blend-mode: overlay in CSS will turn this into film grain
+            gl_FragColor = vec4(vec3(0.5), (n - 0.5) * 0.25);
+          }
+        `,
+        uniforms: {
+          uTime: { value: 0 },
+          uMouse: { value: new Float32Array([0, 0]) },
+        },
+      });
+
+      const mesh = new Mesh(gl, { geometry, program });
+
+      // Resize handler
+      function resize() {
+        if (!canvas) return;
+        const parent = canvas.parentElement;
+        if (parent) {
+          const rect = parent.getBoundingClientRect();
+          renderer.setSize(rect.width, rect.height);
+        }
+      }
+      window.addEventListener('resize', resize);
+      resize(); // Initial size
+
+      // Interaction
+      let mouseX = 0;
+      let mouseY = 0;
+      let targetX = 0;
+      let targetY = 0;
+
+      const parent = canvas.parentElement;
+      if (parent) {
+        parent.addEventListener('mousemove', (e: MouseEvent) => {
+          const rect = parent.getBoundingClientRect();
+          // Normalized -1 to 1 coordinates
+          targetX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+          targetY = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+        });
+        parent.addEventListener('mouseleave', () => {
+          targetX = 0;
+          targetY = 0;
+        });
+      }
+
+      // Render Loop
+      let rafId: number | null = null;
+      function update(t: number) {
+        rafId = requestAnimationFrame(update);
+        
+        program.uniforms.uTime.value = t * 0.001;
+
+        // Smooth mouse lerping
+        mouseX += (targetX - mouseX) * 0.05;
+        mouseY += (targetY - mouseY) * 0.05;
+        program.uniforms.uMouse.value[0] = mouseX;
+        program.uniforms.uMouse.value[1] = mouseY;
+
+        renderer.render({ scene: mesh });
+      }
+
+      // Lazy init via IntersectionObserver
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            // Start render loop
+            if (!rafId) {
+              rafId = requestAnimationFrame(update);
+              canvas.classList.add('is-initialized');
+            }
+          } else {
+            // Pause render loop
+            if (rafId) {
+              cancelAnimationFrame(rafId);
+              rafId = null;
+            }
+          }
+        },
+        { threshold: 0 } // Trigger as soon as 1px is visible
+      );
+      observer.observe(canvas);
+
+      // Cleanup on View Transition swap
+      document.addEventListener('astro:before-swap', () => {
+        window.removeEventListener('resize', resize);
+        observer.disconnect();
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        // Free WebGL context resources
+        gl.getExtension('WEBGL_lose_context')?.loseContext();
+      }, { once: true });
+    });
+  }
+</script>

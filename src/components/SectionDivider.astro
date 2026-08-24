@@ -1,0 +1,193 @@
+---
+/**
+ * SectionDivider — scroll-scrubbed SVG line divider.
+ *
+ * Renders a full-width horizontal SVG line between content sections.
+ * Under normal motion: GSAP ScrollTrigger scrubs the stroke-dashoffset
+ * so the line draws itself as the user scrolls down (and undraws on
+ * scroll up — scrub: true tracks position directly, not one-shot).
+ *
+ * Under prefers-reduced-motion: the line is fully drawn via CSS alone.
+ * Zero JavaScript runs for the animation in that case.
+ *
+ * SVG geometry:
+ *   viewBox="0 0 1000 2"  — line runs x: 0→1000 at y=1 (vertical center)
+ *   preserveAspectRatio="none"  — stretches to full container width
+ *   stroke-dasharray: 1000  — total path length in viewBox units
+ *   stroke-dashoffset: 1000  — starts fully hidden; animated to 0
+ *
+ * Tokens consumed:
+ *   --color-border-strong  — stroke color (auto-adapts to data-theme)
+ *   --divider-stroke-width — controls CSS height of SVG container
+ *   --space-4              — vertical padding around the divider
+ *
+ * Usage: drop between any two content sections.
+ *   <SectionDivider />
+ *
+ * Multiple instances on a page are fully supported — each gets its own
+ * independent ScrollTrigger scoped to its own wrapper element.
+ */
+---
+
+<section class="section-divider" aria-hidden="true">
+  <!--
+    data-divider-line: selector used by the client script to find all
+    dividers on the page without relying on class names that CSS might
+    also need. Avoids coupling between CSS and JS selectors.
+  -->
+  <svg
+    class="divider-svg"
+    viewBox="0 0 1000 2"
+    preserveAspectRatio="none"
+    width="100%"
+    xmlns="http://www.w3.org/2000/svg"
+    data-divider-line
+    aria-hidden="true"
+  >
+    <line
+      class="divider-line"
+      x1="0"
+      y1="1"
+      x2="1000"
+      y2="1"
+    />
+  </svg>
+</section>
+
+<style>
+  /* ── Wrapper ────────────────────────────────────────────────────────── */
+  .section-divider {
+    /* Vertical breathing room between content sections */
+    padding-block: var(--space-4);
+    width: 100%;
+    /* Clip any overflow from stroke-width spill */
+    overflow: hidden;
+  }
+
+  /* ── SVG container ──────────────────────────────────────────────────── */
+  .divider-svg {
+    display: block;
+    /*
+      Height equals the rendered stroke width so the SVG has a minimal
+      visual footprint. overflow: visible lets the stroke render at
+      full visual weight without clipping.
+    */
+    height: var(--divider-stroke-width);
+    overflow: visible;
+  }
+
+  /* ── Line stroke ────────────────────────────────────────────────────── */
+  .divider-line {
+    stroke: var(--color-border-strong);
+    /*
+      stroke-width in SVG user units (viewBox coordinate space).
+      viewBox height = 2 units; stroke-width = 2 → fills the full SVG height.
+      This is NOT CSS px — it scales with the viewBox, not the screen.
+    */
+    stroke-width: 2;
+    stroke-linecap: butt;
+    fill: none;
+
+    /*
+      Dash technique: set dasharray and dashoffset equal to the total
+      path length in viewBox units (1000). This hides the line entirely.
+      GSAP animates dashoffset → 0 to reveal the line as the user scrolls.
+    */
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+  }
+
+  /* ── Reduced motion: fully drawn, no JS required ────────────────────── */
+  /*
+    CSS renders the line as fully drawn before JS runs. Since the script
+    also checks prefersReduced and exits early, the line stays static.
+    No animation, no FOUC — the correct state is set at parse time.
+  */
+  @media (prefers-reduced-motion: reduce) {
+    .divider-line {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>
+
+<script>
+  // ── Motion preference gate ─────────────────────────────────────────────
+  // If reduced motion is preferred:
+  //   • This script exits immediately
+  //   • The @media CSS above has already drawn the line fully
+  //   • No GSAP code runs for this component
+  const prefersReduced = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches;
+
+  if (!prefersReduced) {
+    // ── Import GSAP (Vite singleton) ────────────────────────────────────
+    // Importing from the same package paths as SmoothScroll.astro.
+    // Vite's module deduplication guarantees we get the same instance that
+    // SmoothScroll already configured (ticker removed, Lenis wired in).
+    //
+    // We DO call registerPlugin here because this module may resolve before
+    // SmoothScroll.astro's script if both are deferred — GSAP silently
+    // ignores duplicate plugin registrations (idempotent).
+    const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+      import('gsap'),
+      import('gsap/ScrollTrigger'),
+    ]);
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ── Wire each divider on this page (re-run on navigation) ───────────
+    // querySelectorAll supports multiple SectionDivider instances — each
+    // gets an independent ScrollTrigger scoped to its own section element.
+    document.addEventListener('astro:page-load', () => {
+      const svgs = document.querySelectorAll<SVGElement>('[data-divider-line]');
+
+      svgs.forEach((svg) => {
+        const line = svg.querySelector<SVGLineElement>('.divider-line');
+        // The .section-divider wrapper is the ScrollTrigger trigger element.
+        const section = svg.closest<HTMLElement>('.section-divider');
+
+        if (!line || !section) return;
+
+        gsap.fromTo(
+          line,
+          // FROM: fully hidden (line not yet drawn)
+          { strokeDashoffset: 1000 },
+          {
+            // TO: fully drawn
+            strokeDashoffset: 0,
+            //
+            // ease: 'none' is critical when scrub is true.
+            // With scrub, GSAP maps scroll progress (0–1) directly to tween
+            // progress (0–1). Adding an ease would create a non-linear mapping
+            // that makes the draw rate feel inconsistent relative to scroll speed.
+            ease: 'none',
+            scrollTrigger: {
+              trigger: section,
+              //
+              // start: "top bottom"
+              //   → animation begins when the TOP of the section reaches
+              //     the BOTTOM of the viewport (section just enters view)
+              //
+              // end: "bottom top"
+              //   → animation ends when the BOTTOM of the section reaches
+              //     the TOP of the viewport (section about to leave view)
+              //
+              // Together this means the line draws across the full time the
+              // section is traversing the viewport — tied to the section's
+              // own boundaries, not arbitrary pixel values.
+              start: 'top bottom',
+              end: 'bottom top',
+              //
+              // scrub: true → scroll position drives the tween directly.
+              // Scrolling down draws the line; scrolling up undraws it.
+              // A numeric scrub (e.g. scrub: 1) adds a lag — not wanted here
+              // since the spec calls for direct 1:1 tracking.
+              scrub: true,
+            },
+          },
+        );
+      });
+    });
+  }
+</script>

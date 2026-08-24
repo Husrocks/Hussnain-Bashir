@@ -1,0 +1,41 @@
+---
+/**
+ * PersonSchema — JSON-LD structured data for the site owner.
+ *
+ * Inject via <slot name="head"> on the homepage only.
+ * Replace all YOUR_* placeholders with real values before launch.
+ *
+ * Schema.org reference: https://schema.org/Person
+ */
+interface Props {
+  /** Full name of the person */
+  name: string;
+  /** Professional title */
+  jobTitle: string;
+  /** URL for the person (e.g. site URL) */
+  url: string;
+}
+
+const { name, jobTitle, url } = Astro.props;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name,
+  jobTitle,
+  url,
+  sameAs: [
+    // TODO: Replace YOUR_GITHUB_USERNAME with your GitHub handle
+    'https://github.com/YOUR_GITHUB_USERNAME',
+    // Pre-filled — update if URL changes
+    'https://www.linkedin.com/in/hussnain-bashir/',
+  ],
+  knowsAbout: [
+    // TODO: Replace with your actual skills/technologies
+    'YOUR_SKILL_1',
+    'YOUR_SKILL_2',
+    'YOUR_SKILL_3',
+  ],
+};
+---
+<script type="application/ld+json" set:html={JSON.stringify(schema, null, 2)} />
