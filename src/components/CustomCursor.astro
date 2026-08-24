@@ -154,7 +154,7 @@
     document.addEventListener('mousemove', (e: MouseEvent) => {
       // Reveal cursor on first movement
       if (!cursorVisible) {
-        gsap.set(cursor, { opacity: 1 });
+        gsap.set(cursor, { opacity: 1, z: 9999 });
         cursorVisible = true;
       }
       moveX(e.clientX);
