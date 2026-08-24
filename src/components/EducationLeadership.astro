@@ -97,7 +97,7 @@ import ScrambleHeading from './ScrambleHeading.astro';
   .ed-lead-section {
     padding-block-start: clamp(4rem, 8vh, 7rem);
     padding-block-end: var(--space-8);
-    padding-inline: var(--space-4);
+    padding-inline: clamp(1rem, 4vw, var(--space-4));
   }
 
   .ed-lead-container {
@@ -107,14 +107,14 @@ import ScrambleHeading from './ScrambleHeading.astro';
 
   .header-container {
     text-align: center;
-    margin-bottom: clamp(4.5rem, 10vh, 7.5rem);
+    margin-bottom: clamp(3.5rem, 8vh, 7.5rem);
   }
 
   .header-container :global(.section-title),
   .header-container :global(h2),
   .ed-lead-section :global(.section-title) {
-    font-size: clamp(3.8rem, 8.5vw, 8.2rem) !important;
-    line-height: 0.88 !important;
+    font-size: clamp(2.3rem, 9vw, 8.2rem) !important;
+    line-height: 0.92 !important;
     letter-spacing: -0.035em !important;
     font-weight: 900 !important;
     text-transform: uppercase !important;
@@ -156,7 +156,7 @@ import ScrambleHeading from './ScrambleHeading.astro';
   /* Row Layout */
   .timeline-row {
     display: flex;
-    align-items: stretch; /* Stretch so the divider matches height */
+    align-items: stretch;
     gap: var(--space-6);
   }
 
@@ -173,8 +173,8 @@ import ScrambleHeading from './ScrambleHeading.astro';
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
-    min-width: 95px;
-    padding-top: 4px; /* Align visually with title text */
+    min-width: 85px;
+    padding-top: 4px;
   }
 
   .date-label {
@@ -200,7 +200,7 @@ import ScrambleHeading from './ScrambleHeading.astro';
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 10px; /* Optically center with title */
+    padding-top: 10px;
     margin-inline: var(--space-2);
   }
 
@@ -229,7 +229,7 @@ import ScrambleHeading from './ScrambleHeading.astro';
   }
 
   .item-title {
-    font-size: var(--text-xl);
+    font-size: clamp(1.1rem, 2.5vw, var(--text-xl));
     font-weight: 700;
     color: var(--color-text);
     line-height: 1.35;
@@ -237,7 +237,7 @@ import ScrambleHeading from './ScrambleHeading.astro';
   }
 
   .item-subtitle {
-    font-size: var(--text-base);
+    font-size: clamp(0.88rem, 2vw, var(--text-base));
     color: var(--color-text-muted);
     font-weight: 500;
     margin: 0;
@@ -259,19 +259,34 @@ import ScrambleHeading from './ScrambleHeading.astro';
   }
 
   /* Mobile */
-  @media (max-width: 900px) {
-    .timeline-row.mobile-stack {
+  @media (max-width: 640px) {
+    .timeline-row {
       flex-direction: column;
-      gap: var(--space-6);
+      gap: var(--space-4);
+    }
+
+    .timeline-item {
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    
+    .timeline-node {
+      display: none;
+    }
+
+    .date-stack {
+      flex-direction: row;
+      align-items: baseline;
+      gap: 6px;
+      min-width: auto;
+    }
+
+    .date-year {
+      font-size: 1.25rem;
     }
     
     .vertical-divider {
       display: none;
-    }
-    
-    .date-stack {
-      align-items: flex-start;
-      min-width: 95px;
     }
     
     .item-desc {
@@ -280,13 +295,13 @@ import ScrambleHeading from './ScrambleHeading.astro';
   }
 
   .institution-logo {
-    width: 64px;
-    height: 64px;
-    min-width: 64px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
     object-fit: contain;
     border-radius: var(--radius-md);
     background: white;
-    padding: 6px;
+    padding: 4px;
     flex-shrink: 0;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
   }

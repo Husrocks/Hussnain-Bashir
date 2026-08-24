@@ -111,7 +111,7 @@ const sortedProjects = allProjects.sort((a, b) => {
     min-height: 100vh;
     display: flex;
     align-items: flex-end;
-    padding-inline: clamp(1.5rem, 4vw, 3rem);
+    padding-inline: clamp(1rem, 4vw, 3rem);
     padding-block-start: clamp(5rem, 10vh, 7rem);
     padding-block-end: 0;
     position: relative;
@@ -143,24 +143,27 @@ const sortedProjects = allProjects.sort((a, b) => {
     .hero {
       align-items: center;
       padding-block-end: var(--space-6);
+      min-height: auto;
+      padding-top: clamp(6rem, 12vh, 8rem);
     }
 
     .hero-content {
       grid-template-columns: 1fr;
       text-align: center;
-      gap: var(--space-6);
+      gap: var(--space-4);
       align-items: center;
     }
 
     .hero-text-column {
       align-items: center;
       padding-bottom: 0;
+      padding-top: 0;
     }
   }
 
   .hero-title {
-    font-size: clamp(3.8rem, 8.5vw, 8.2rem);
-    line-height: 0.88;
+    font-size: clamp(2.3rem, 11vw, 8.2rem);
+    line-height: 0.92;
     letter-spacing: -0.035em;
     font-weight: 900;
     margin-block-end: var(--space-4);
@@ -173,7 +176,7 @@ const sortedProjects = allProjects.sort((a, b) => {
   }
 
   .hero-subtitle {
-    font-size: var(--text-base);
+    font-size: clamp(0.85rem, 2.5vw, var(--text-base));
     color: var(--color-accent-2);
     font-weight: var(--weight-bold);
     text-transform: uppercase;
@@ -182,7 +185,7 @@ const sortedProjects = allProjects.sort((a, b) => {
   }
 
   .hero-description {
-    font-size: var(--text-lg);
+    font-size: clamp(1rem, 2.2vw, var(--text-lg));
     color: var(--color-text-muted);
     max-width: 520px;
     margin-block-end: var(--space-5);
@@ -210,8 +213,8 @@ const sortedProjects = allProjects.sort((a, b) => {
 
   .portrait-glow {
     position: absolute;
-    width: clamp(350px, 40vw, 550px);
-    height: clamp(350px, 40vw, 550px);
+    width: clamp(280px, 40vw, 550px);
+    height: clamp(280px, 40vw, 550px);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -45%);
@@ -244,22 +247,23 @@ const sortedProjects = allProjects.sort((a, b) => {
 
   @media (max-width: 960px) {
     .hero-graphic-column {
-      height: 480px;
-      margin-top: var(--space-3);
+      height: clamp(340px, 50vh, 460px);
+      margin-top: var(--space-2);
     }
     .portrait-image {
-      transform: translateY(10px) scale(1.05);
+      transform: translateY(0) scale(1.02);
+      max-width: 90%;
     }
     .portrait-image:hover {
-      transform: translateY(10px) scale(1.08);
+      transform: translateY(0) scale(1.04);
     }
   }
 
   /* ── Projects Section ── */
   .projects-section {
     position: relative;
-    padding-inline: var(--space-4);
-    padding-block-start: clamp(8rem, 16vh, 13rem);
+    padding-inline: clamp(1rem, 4vw, var(--space-4));
+    padding-block-start: clamp(5rem, 12vh, 13rem);
     padding-block-end: clamp(4rem, 8vh, 7rem);
     max-width: 1200px;
     margin: 0 auto;
@@ -273,8 +277,8 @@ const sortedProjects = allProjects.sort((a, b) => {
   .projects-header :global(.section-title),
   .projects-header :global(h2),
   .projects-section :global(.section-title) {
-    font-size: clamp(3.8rem, 8.5vw, 8.2rem) !important;
-    line-height: 0.88 !important;
+    font-size: clamp(2.3rem, 9vw, 8.2rem) !important;
+    line-height: 0.92 !important;
     letter-spacing: -0.035em !important;
     font-weight: 900 !important;
     text-transform: uppercase !important;
@@ -290,6 +294,7 @@ const sortedProjects = allProjects.sort((a, b) => {
     max-width: 620px;
     margin: 0 auto;
     padding-top: var(--space-2);
-    padding-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    width: 100%;
   }
 </style>
