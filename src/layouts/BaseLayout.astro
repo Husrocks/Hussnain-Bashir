@@ -23,7 +23,6 @@
 import SkipLink from '@components/SkipLink.astro';
 import SiteHeader from '@components/SiteHeader.astro';
 import SiteFooter from '@components/SiteFooter.astro';
-import CustomCursor from '@components/CustomCursor.astro';
 import SmoothScroll from '@components/SmoothScroll.astro';
 import { ClientRouter } from 'astro:transitions';
 import '@styles/base.css';
@@ -73,7 +72,8 @@ void ogImage;
     <link rel="preload" href="/fonts/inter-variable.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/webp" href="/favicon.webp" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/webp" href="/favicon.webp" />
 
     <!--
       Per-page head content: SEO.astro (title, description, OG, Twitter,
@@ -103,8 +103,6 @@ void ogImage;
     </main>
 
     <SiteFooter />
-
-    <CustomCursor />
 
     <!--
       Scroll engine — Lenis + GSAP ScrollTrigger, gated behind
