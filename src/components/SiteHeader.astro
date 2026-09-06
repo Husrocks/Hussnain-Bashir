@@ -39,6 +39,9 @@ const currentPath = pathname.replace(/\/$/, ""); // remove trailing slash for ex
         <a href="https://www.linkedin.com/in/hussnain-bashir" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="icon-btn linkedin-btn" data-cursor="hover">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
         </a>
+        <a href="mailto:hussnain.bashir.go@gmail.com" aria-label="Email" class="icon-btn email-btn" data-cursor="hover">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
       </div>
       <a href="/hussnain-bashir-resume.pdf" target="_blank" rel="noopener noreferrer" class="resume-button" data-cursor="hover">Resume</a>
     </div>
@@ -167,6 +170,13 @@ const currentPath = pathname.replace(/\/$/, ""); // remove trailing slash for ex
     color: #ffffff;
     border-color: #0a66c2;
     box-shadow: 0 8px 20px rgba(10, 102, 194, 0.4);
+  }
+
+  .email-btn:hover {
+    background: #ea4335;
+    color: #ffffff;
+    border-color: #ea4335;
+    box-shadow: 0 8px 20px rgba(234, 67, 53, 0.4);
   }
 
   .resume-button {
