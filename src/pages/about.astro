@@ -24,7 +24,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
     />
   </Fragment>
 
-  <section class="about-section">
+  <section class="about-section desktop-only">
     <div class="about-hero">
       <div class="about-hero-text">
         <ScrambleHeading text="ABOUT ME" tag="h1" class="about-title" />
@@ -246,9 +246,270 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
       </div>
     </div>
   </section>
+
+  <!-- Mobile About View (Mobile App Redesign) -->
+  <div class="mobile-about-view">
+    <!-- Hero Header -->
+    <div class="m-about-header">
+      <img src="/images/about.webp?v=4" alt="Hussnain Bashir" class="m-avatar" />
+      <div class="m-hero-text">
+        <h1 class="m-name">Hussnain Bashir</h1>
+        <p class="m-title-role">AI Full-Stack Developer</p>
+        <p class="m-bio">
+          Building end-to-end intelligent systems, from fine-tuning LLMs to scalable Web3 architectures.
+        </p>
+      </div>
+      <div class="m-hero-actions">
+        <a href="/hussnain-bashir-resume.pdf" target="_blank" class="m-btn primary">
+          <span>View Resume</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Skills Cloud -->
+    <div class="m-section">
+      <h2 class="m-section-title">Technical Arsenal</h2>
+      <div class="m-skills-cloud">
+        <span class="m-skill blue">Python</span>
+        <span class="m-skill blue">JavaScript</span>
+        <span class="m-skill blue">C++</span>
+        <span class="m-skill blue">Solidity</span>
+        <span class="m-skill purple">PyTorch</span>
+        <span class="m-skill purple">Hugging Face</span>
+        <span class="m-skill purple">YOLOv8</span>
+        <span class="m-skill amber">LangChain</span>
+        <span class="m-skill amber">Agentic AI</span>
+        <span class="m-skill amber">RAG</span>
+        <span class="m-skill cyan">React.js</span>
+        <span class="m-skill cyan">FastAPI</span>
+        <span class="m-skill cyan">Docker</span>
+      </div>
+    </div>
+
+    <!-- Experience Accordion -->
+    <div class="m-section">
+      <h2 class="m-section-title">Experience</h2>
+      <details class="m-accordion">
+        <summary class="m-accordion-header">
+          <div class="m-acc-info">
+            <h3>Student Life Ambassador</h3>
+            <span class="m-acc-meta">LGU | Jun 2023 - Aug 2023</span>
+          </div>
+          <svg class="m-acc-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </summary>
+        <div class="m-accordion-content">
+          <ul>
+            <li>Guided 50+ incoming students through the ByteCamp program.</li>
+            <li>Organized 15+ community events for 200+ students.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <!-- Education Accordion -->
+    <div class="m-section">
+      <h2 class="m-section-title">Education</h2>
+      <details class="m-accordion">
+        <summary class="m-accordion-header">
+          <div class="m-acc-info">
+            <h3>BS Computer Science</h3>
+            <span class="m-acc-meta">IAC | Lahore</span>
+          </div>
+          <svg class="m-acc-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </summary>
+        <div class="m-accordion-content">
+          <p>Concentration: Artificial Intelligence · ML · NLP · Web Applications</p>
+        </div>
+      </details>
+    </div>
+  </div>
 </BaseLayout>
 
+<style is:global>
+  @media (max-width: 768px) {
+    .about-section.desktop-only { display: none !important; }
+  }
+</style>
+
 <style>
+  .mobile-about-view { display: none; }
+
+  @media (max-width: 768px) {
+    .desktop-only { display: none !important; }
+
+    .mobile-about-view {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-height: 100svh;
+      padding-bottom: 6rem;
+      background: #0a0b10;
+    }
+
+    /* Hero Section */
+    .m-about-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 2.5rem 1.25rem 2rem;
+      background: linear-gradient(180deg, rgba(20,22,30,0.8) 0%, rgba(10,11,16,1) 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .m-avatar {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 1.25rem;
+      border: 2px solid rgba(0, 255, 204, 0.4);
+      box-shadow: 0 10px 30px rgba(0, 255, 204, 0.15);
+    }
+
+    .m-name {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 0 0 0.3rem 0;
+      letter-spacing: -0.03em;
+    }
+
+    .m-title-role {
+      font-size: 0.95rem;
+      color: #00ffcc;
+      font-weight: 600;
+      margin: 0 0 1rem 0;
+    }
+
+    .m-bio {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+      margin: 0 0 1.5rem 0;
+      max-width: 400px;
+    }
+
+    .m-hero-actions {
+      display: flex;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .m-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.9rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .m-btn.primary {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+    }
+
+    /* Sections */
+    .m-section {
+      padding: 2rem 1.25rem 0;
+    }
+
+    .m-section-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 0 0 1.25rem 0;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+    }
+
+    /* Skills Cloud */
+    .m-skills-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .m-skill {
+      padding: 0.4rem 0.9rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .m-skill.blue { color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.08); }
+    .m-skill.purple { color: #c084fc; border-color: rgba(168, 85, 247, 0.3); background: rgba(168, 85, 247, 0.08); }
+    .m-skill.amber { color: #ffb800; border-color: rgba(255, 184, 0, 0.3); background: rgba(255, 184, 0, 0.08); }
+    .m-skill.cyan { color: #00ffcc; border-color: rgba(0, 255, 204, 0.3); background: rgba(0, 255, 204, 0.08); }
+
+    /* Accordions */
+    .m-accordion {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .m-accordion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem;
+      cursor: pointer;
+      list-style: none;
+    }
+    
+    .m-accordion-header::-webkit-details-marker { display: none; }
+
+    .m-acc-info h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 0.2rem 0;
+    }
+
+    .m-acc-meta {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      font-weight: 500;
+    }
+
+    .m-acc-icon {
+      color: rgba(255,255,255,0.5);
+      transition: transform 0.3s ease;
+    }
+
+    .m-accordion[open] .m-acc-icon {
+      transform: rotate(180deg);
+    }
+
+    .m-accordion-content {
+      padding: 0 1.25rem 1.25rem;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+    }
+
+    .m-accordion-content ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+    
+    .m-accordion-content li {
+      margin-bottom: 0.5rem;
+    }
+  }
+
   .about-section {
     padding-inline: var(--space-4);
     padding-block: var(--space-6);

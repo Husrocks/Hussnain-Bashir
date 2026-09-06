@@ -67,7 +67,7 @@ const themeGradients = [
     />
   </Fragment>
 
-  <main class="projects-page">
+  <main class="projects-page desktop-only">
     <div class="projects-header-wrapper">
       <ScrambleHeading text="ALL PROJECTS" tag="h1" class="projects-title" />
       <p class="projects-subtitle">
@@ -145,9 +145,467 @@ const themeGradients = [
       </div>
     </div>
   </main>
+
+  <!-- Mobile Projects View (Mobile App Redesign) -->
+  <div class="mobile-projects-view">
+    <!-- Sticky Header -->
+    <div class="m-proj-header">
+      <div class="m-header-top">
+        <h1 class="m-title">PROJECTS</h1>
+        <span class="m-count">{sortedProjects.length} total</span>
+      </div>
+      
+      <!-- Filter Chips Row -->
+      <div class="m-filter-scroll">
+        <div class="m-filter-chips">
+          <button class="m-chip active" data-filter="all">All</button>
+          <button class="m-chip" data-filter="ai">AI / ML</button>
+          <button class="m-chip" data-filter="fullstack">Full-Stack</button>
+          <button class="m-chip" data-filter="web3">Web3</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards List -->
+    <div class="m-proj-list">
+      {sortedProjects.map((project, index) => {
+        const theme = themeGradients[index % themeGradients.length];
+        const catMap = {
+          "AI / Supply Chain": "ai",
+          "NLP / RAG Summarizer": "ai",
+          "Web3 / Smart Contracts": "web3",
+          "NFC / Web Application": "fullstack",
+          "CS Theory / Graph AI": "ai",
+          "Fitness / Next.js Web": "fullstack"
+        };
+        const filterCat = catMap[theme.tag] || "all";
+        
+        return (
+          <div class="m-card" data-category={filterCat} onclick={`openSheet(${index})`}>
+            <div class="m-card-hero">
+              {project.data.heroImage ? (
+                <img src={project.data.heroImage.src} alt={project.data.title} loading="lazy" />
+              ) : (
+                <div class="placeholder" style={`background: ${theme.bg}`}></div>
+              )}
+              <div class="m-card-badges">
+                <span class="badge category">{theme.tag || project.data.role}</span>
+                <span class="badge year">{project.data.year || '2026'}</span>
+              </div>
+            </div>
+            
+            <div class="m-card-body">
+              <h3 class="m-card-title">{project.data.title}</h3>
+              <p class="m-card-summary">{project.data.summary}</p>
+              
+              <div class="m-stack-row">
+                {project.data.stack.slice(0, 4).map((tech) => (
+                  <span class="stack-pill">{tech}</span>
+                ))}
+                {project.data.stack.length > 4 && (
+                  <span class="stack-pill more">+{project.data.stack.length - 4}</span>
+                )}
+              </div>
+              
+              <button class="m-explore-btn">
+                <span>Explore</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Bottom Sheets -->
+    {sortedProjects.map((project, index) => {
+      const theme = themeGradients[index % themeGradients.length];
+      return (
+        <div class="m-bottom-sheet" id={`sheet-${index}`} aria-hidden="true">
+          <div class="sheet-backdrop" onclick={`closeSheet(${index})`}></div>
+          <div class="sheet-content">
+            <div class="sheet-handle"></div>
+            
+            <div class="sheet-header">
+              <h2 class="sheet-title">{project.data.title}</h2>
+              <span class="sheet-category">{theme.tag}</span>
+            </div>
+            
+            <div class="sheet-body">
+              <p class="sheet-summary">{project.data.summary}</p>
+              
+              <h4 class="sheet-section-title">Tech Stack</h4>
+              <div class="sheet-stack-grid">
+                {project.data.stack.map(tech => (
+                  <span class="sheet-pill">{tech}</span>
+                ))}
+              </div>
+              
+              <div class="sheet-actions">
+                <a href={`/projects/${project.data.slug}`} class="sheet-btn primary">
+                  View Full Project Case
+                </a>
+                {project.data.repoUrl && (
+                  <a href={project.data.repoUrl} target="_blank" rel="noopener noreferrer" class="sheet-btn secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    Source Code
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
 </BaseLayout>
 
 <style>
+  .mobile-projects-view {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .desktop-only { display: none !important; }
+    
+    .mobile-projects-view {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-height: 100svh;
+      padding-bottom: 6rem;
+      background: linear-gradient(160deg, #1A1325 0%, #080A10 100%);
+    }
+
+    /* Sticky Header */
+    .m-proj-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(26, 19, 37, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 1.25rem 0 0 0;
+      margin-bottom: 1rem;
+      transform: translate3d(0, 0, 0);
+      -webkit-transform: translate3d(0, 0, 0);
+      will-change: transform, backdrop-filter;
+    }
+
+    .m-header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .m-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin: 0;
+    }
+
+    .m-count {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      font-weight: 500;
+    }
+
+    /* Filter Chips */
+    .m-filter-scroll {
+      width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 1.25rem 1rem 1.25rem;
+    }
+    
+    .m-filter-scroll::-webkit-scrollbar { display: none; }
+
+    .m-filter-chips {
+      display: inline-flex;
+      gap: 0.5rem;
+    }
+
+    .m-chip {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      padding: 0.4rem 1.2rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .m-chip.active {
+      background: #F5BA3F;
+      border-color: #F5BA3F;
+      color: #000;
+    }
+
+    /* Cards List */
+    .m-proj-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding: 0 1.25rem;
+    }
+
+    .m-card {
+      background: #181C27;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 24px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+      display: block;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .m-card.hidden {
+      display: none;
+    }
+
+    .m-card:active {
+      transform: scale(0.97);
+    }
+
+    .m-card-hero {
+      position: relative;
+      width: 100%;
+      height: 220px;
+    }
+
+    .m-card-hero img, .m-card-hero .placeholder {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .m-card-badges {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .badge {
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 0.35rem 0.7rem;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .badge.category { color: #F5BA3F; border-color: rgba(245, 186, 63, 0.3); }
+
+    .m-card-body {
+      padding: 1.25rem;
+    }
+
+    .m-card-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 0 0 0.5rem 0;
+      letter-spacing: -0.01em;
+    }
+
+    .m-card-summary {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.6;
+      margin: 0 0 1.25rem 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .m-stack-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .stack-pill {
+      background: rgba(255,255,255,0.05);
+      padding: 0.3rem 0.7rem;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.85);
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .m-explore-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 0.9rem;
+      border-radius: 100px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: background 0.2s ease;
+    }
+    
+    .m-explore-btn:active {
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* Bottom Sheet */
+    .m-bottom-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      pointer-events: none;
+    }
+
+    .m-bottom-sheet[aria-hidden="false"] {
+      pointer-events: auto;
+    }
+
+    .sheet-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .m-bottom-sheet[aria-hidden="false"] .sheet-backdrop {
+      opacity: 1;
+    }
+
+    .sheet-content {
+      position: relative;
+      background: #181C27;
+      width: 100%;
+      max-height: 85svh;
+      border-top-left-radius: 32px;
+      border-top-right-radius: 32px;
+      padding: 0 1.5rem 2.5rem;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .m-bottom-sheet[aria-hidden="false"] .sheet-content {
+      transform: translateY(0);
+    }
+
+    .sheet-handle {
+      width: 40px;
+      height: 5px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 5px;
+      margin: 12px auto 20px;
+    }
+
+    .sheet-header {
+      margin-bottom: 1.25rem;
+    }
+
+    .sheet-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 0 0 0.3rem 0;
+    }
+
+    .sheet-category {
+      font-size: 0.9rem;
+      color: #F5BA3F;
+      font-weight: 700;
+    }
+
+    .sheet-summary {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+      margin: 0 0 1.5rem 0;
+    }
+
+    .sheet-section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 0.8rem 0;
+    }
+
+    .sheet-stack-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .sheet-pill {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .sheet-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .sheet-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 1rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .sheet-btn.primary {
+      background: #fff;
+      color: #000;
+    }
+    
+    .sheet-btn.secondary {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+    }
+  }
+
   .projects-page {
     padding-inline: clamp(1.5rem, 4vw, 3rem);
     padding-block-start: clamp(6rem, 12vh, 9rem);
@@ -528,6 +986,48 @@ const themeGradients = [
 </style>
 
 <script>
+  // Mobile App Logic
+  document.addEventListener('astro:page-load', () => {
+    // 1. Filtering
+    const chips = document.querySelectorAll('.m-chip');
+    const cards = document.querySelectorAll('.m-card');
+
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        
+        const filter = (chip as HTMLElement).dataset.filter;
+        
+        cards.forEach(card => {
+          const el = card as HTMLElement;
+          if (filter === 'all' || el.dataset.category === filter) {
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // 2. Bottom Sheet Global Functions
+    (window as any).openSheet = (index: number) => {
+      const sheet = document.getElementById(`sheet-${index}`);
+      if (sheet) {
+        sheet.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden'; // prevent bg scroll
+      }
+    };
+    
+    (window as any).closeSheet = (index: number) => {
+      const sheet = document.getElementById(`sheet-${index}`);
+      if (sheet) {
+        sheet.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+    };
+  });
+
   function setupFramer3DInteraction() {
     const cards = document.querySelectorAll('.framer-3d-card');
     

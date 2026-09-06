@@ -9,6 +9,7 @@ import MarqueeDivider from '@components/MarqueeDivider.astro';
 import ExperienceTimeline from '@components/ExperienceTimeline.astro';
 import EducationLeadership from '@components/EducationLeadership.astro';
 import ScrambleHeading from '@components/ScrambleHeading.astro';
+import MobileProfileCard from '@components/MobileProfileCard.astro';
 import { getCollection } from 'astro:content';
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
@@ -40,107 +41,121 @@ const sortedProjects = allProjects.sort((a, b) => {
     />
   </Fragment>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      
-      <!-- Left Column: Typography -->
-      <div class="hero-text-column">
-        <h1 class="hero-title">
-          <span>HUSSNAIN</span>
-          <span>BASHIR</span>
-        </h1>
-        <p class="hero-subtitle">
-          AI/ML & FULL-STACK DEVELOPER
-        </p>
-        <p class="hero-description">
-          I craft digital experiences that are robust, highly performant, and built with purpose from advanced AI pipelines to scalable full-stack systems.
-        </p>
-        <div class="hero-accent-line"></div>
-      </div>
+  <!-- Mobile-only Profile Card (hidden on desktop) -->
+  <MobileProfileCard />
 
-      <!-- Right Column: Massive Hero Portrait -->
-      <div class="hero-graphic-column">
-        <div class="portrait-glow"></div>
-        <img 
-          src="/images/PROFILE.webp" 
-          alt="Hussnain Bashir" 
-          class="portrait-image" 
-          width="700"
-          height="850"
-          loading="eager"
-          decoding="async"
-        />
-      </div>
-      
-    </div>
-  </section>
-
-  <!-- About Section -->
-  <section id="about" class="about-section">
-    <div class="about-inner">
-      <div class="about-header">
-        <ScrambleHeading text="ABOUT ME" tag="h2" class="section-title" />
-      </div>
-      <p>
-        Hi, I'm <strong>Hussnain Bashir</strong>, an AI/ML and Full-Stack Developer dedicated to architecting and building scalable, next-generation intelligent systems.
-      </p>
-
-      <div class="about-stats">
-        <div class="stat-item">
-          <div class="stat-number-wrapper">
-            <span class="stat-number">2+</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="stat-icon"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-          </div>
-          <span class="stat-label">Years of<br>Experience</span>
+  <!-- Desktop Layout (Hidden on Mobile) -->
+  <div class="desktop-layout">
+    <!-- Hero Section (hidden on mobile) -->
+    <section class="hero">
+      <div class="hero-content">
+        
+        <!-- Left Column: Typography -->
+        <div class="hero-text-column">
+          <h1 class="hero-title">
+            <span>HUSSNAIN</span>
+            <span>BASHIR</span>
+          </h1>
+          <p class="hero-subtitle">
+            AI/ML & FULL-STACK DEVELOPER
+          </p>
+          <p class="hero-description">
+            I craft digital experiences that are robust, highly performant, and built with purpose from advanced AI pipelines to scalable full-stack systems.
+          </p>
+          <div class="hero-accent-line"></div>
         </div>
-        <div class="stat-item">
-          <div class="stat-number-wrapper">
-            <span class="stat-number">10+</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="stat-icon"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-          </div>
-          <span class="stat-label">Projects<br>Built</span>
+
+        <!-- Right Column: Massive Hero Portrait -->
+        <div class="hero-graphic-column">
+          <div class="portrait-glow"></div>
+          <img 
+            src="/images/PROFILE.webp" 
+            alt="Hussnain Bashir" 
+            class="portrait-image" 
+            width="700"
+            height="850"
+            loading="eager"
+            decoding="async"
+          />
         </div>
+        
       </div>
+    </section>
 
-      <div class="about-action">
-        <a href="/about" class="about-link" data-cursor="hover">
-          <span class="link-text">Get to know me better</span>
-          <span class="link-arrow">&rarr;</span>
-        </a>
+    <!-- About Section -->
+    <section id="about" class="about-section">
+      <div class="about-inner">
+        <div class="about-header">
+          <ScrambleHeading text="ABOUT ME" tag="h2" class="section-title" />
+        </div>
+        <p>
+          Hi, I'm <strong>Hussnain Bashir</strong>, an AI/ML and Full-Stack Developer dedicated to architecting and building scalable, next-generation intelligent systems.
+        </p>
+
+        <div class="about-stats">
+          <div class="stat-item">
+            <div class="stat-number-wrapper">
+              <span class="stat-number">2+</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="stat-icon"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+            <span class="stat-label">Years of<br>Experience</span>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number-wrapper">
+              <span class="stat-number">10+</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="stat-icon"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <span class="stat-label">Projects<br>Built</span>
+          </div>
+        </div>
+
+        <div class="about-action">
+          <a href="/about" class="about-link" data-cursor="hover">
+            <span class="link-text">Get to know me better</span>
+            <span class="link-arrow">&rarr;</span>
+          </a>
+        </div>
+
       </div>
+    </section>
 
-    </div>
-  </section>
+    <!-- Projects Section -->
+    <section id="work" class="projects-section">
+      <div class="projects-header">
+        <ScrambleHeading text="PROJECTS" tag="h2" class="section-title" />
+      </div>
+      <div class="project-stack">
+        {sortedProjects.length > 0 ? (
+          sortedProjects.slice(0, 4).map((project, index) => (
+            <ProjectCard project={project} index={index} priority={index === 0} />
+          ))
+        ) : (
+          <p>No projects found. Add markdown files to src/content/projects/!</p>
+        )}
+      </div>
+    </section>
 
-  <!-- Projects Section -->
-  <section id="work" class="projects-section">
-    <div class="projects-header">
-      <ScrambleHeading text="PROJECTS" tag="h2" class="section-title" />
-    </div>
-    <div class="project-stack">
-      {sortedProjects.length > 0 ? (
-        sortedProjects.slice(0, 4).map((project, index) => (
-          <ProjectCard project={project} index={index} priority={index === 0} />
-        ))
-      ) : (
-        <p>No projects found. Add markdown files to src/content/projects/!</p>
-      )}
-    </div>
-  </section>
+    <!-- Animated Marquee Divider -->
+    <MarqueeDivider />
 
-  <!-- Animated Marquee Divider -->
-  <MarqueeDivider />
+    <!-- Skills Editor Section -->
+    <CodeEditorSkills />
 
-  <!-- Skills Editor Section -->
-  <CodeEditorSkills />
+    <!-- Experience Section -->
+    <ExperienceTimeline />
 
-  <!-- Experience Section -->
-  <ExperienceTimeline />
-
-  <!-- Education & Leadership Section -->
-  <EducationLeadership />
+    <!-- Education & Leadership Section -->
+    <EducationLeadership />
+  </div>
 </BaseLayout>
+
+<style is:global>
+  @media (max-width: 768px) {
+    .desktop-layout {
+      display: none !important;
+    }
+  }
+</style>
 
 <style>
   /* ── Hero Section ── */
@@ -410,9 +425,15 @@ const sortedProjects = allProjects.sort((a, b) => {
     margin: 0 auto;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
+    /* Hide the desktop hero and about on mobile — MobileProfileCard takes over */
+    .hero,
+    .about-section {
+      display: none;
+    }
+
     .projects-section {
-      padding-block-start: 5rem;
+      padding-block-start: 3rem;
       padding-block-end: 4rem;
     }
   }

@@ -65,6 +65,13 @@
     overflow: hidden;
   }
 
+  /* Hide traditional web footer on mobile app view */
+  @media (max-width: 768px) {
+    .site-footer {
+      display: none !important;
+    }
+  }
+
   /* ── CTA Section ── */
   .cta-container {
     max-width: 1200px;
