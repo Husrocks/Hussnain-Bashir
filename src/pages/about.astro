@@ -36,6 +36,24 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
             I am highly proficient in Python, React.js, FastAPI, and C++, with a proven track record of leveraging AI, Web3, and automation to architect scalable, production-ready solutions.
           </p>
         </div>
+
+        <div class="about-stats">
+          <div class="stat-item">
+            <span class="stat-number">2+</span>
+            <span class="stat-label">Years of<br>Experience</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">10+</span>
+            <span class="stat-label">Projects<br>Built</span>
+          </div>
+        </div>
+
+        <div class="about-actions">
+          <a href="/hussnain-bashir-resume.pdf" target="_blank" rel="noopener noreferrer" class="resume-btn glass-panel" data-cursor="hover">
+            <span class="btn-text">View My Resume</span>
+            <span class="btn-arrow">&rarr;</span>
+          </a>
+        </div>
       </div>
 
       <div class="about-image-wrapper">
@@ -266,6 +284,78 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
     margin-block-end: var(--space-3);
   }
 
+  .about-stats {
+    display: flex;
+    justify-content: flex-start;
+    gap: clamp(2rem, 5vw, 4rem);
+    margin-block: var(--space-4);
+  }
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  .stat-number {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.4;
+  }
+
+  .about-actions {
+    margin-block-start: var(--space-4);
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .resume-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    overflow: hidden;
+    background: rgba(14, 15, 20, 0.7);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .resume-btn:hover {
+    transform: translateY(-3px);
+    border-color: rgba(0, 255, 204, 0.5);
+    box-shadow: 0 10px 20px rgba(0, 255, 204, 0.15);
+  }
+
+  .resume-btn .btn-text {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: var(--text-base);
+    color: var(--color-text);
+  }
+
+  .resume-btn .btn-arrow {
+    color: var(--color-accent);
+    font-size: var(--text-lg);
+    transition: transform 0.3s ease;
+  }
+
+  .resume-btn:hover .btn-arrow {
+    transform: translateX(5px);
+  }
+
   .about-image-wrapper {
     position: relative;
     display: flex;
@@ -315,6 +405,19 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
       text-align: center;
       gap: var(--space-5);
     }
+    .about-hero-text {
+      order: 2;
+    }
+    .about-image-wrapper {
+      order: 1;
+      margin: 0 auto;
+    }
+    .about-actions {
+      justify-content: center;
+    }
+    .about-stats {
+      justify-content: center;
+    }
   }
 
   /* ── Technical Arsenal Section ── */
@@ -354,6 +457,26 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: var(--space-5);
+  }
+
+  @media (max-width: 768px) {
+    .skills-cards-grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 1rem;
+      scrollbar-width: none;
+    }
+    .skills-cards-grid::-webkit-scrollbar {
+      display: none;
+    }
+    .skill-category-card {
+      min-width: 85vw;
+      scroll-snap-align: center;
+      flex-shrink: 0;
+    }
   }
 
   .skill-category-card {
