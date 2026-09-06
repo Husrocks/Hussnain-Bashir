@@ -16,6 +16,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 // Fetch all projects and sort by featured first, then year descending
 const allProjects = await getCollection('projects');
 const sortedProjects = allProjects.sort((a, b) => {
+  const aHasLive = !!a.data.liveUrl;
+  const bHasLive = !!b.data.liveUrl;
+  if (aHasLive && !bHasLive) return -1;
+  if (!aHasLive && bHasLive) return 1;
+
   if (a.data.featured && !b.data.featured) return -1;
   if (!a.data.featured && b.data.featured) return 1;
   return b.data.year - a.data.year;
