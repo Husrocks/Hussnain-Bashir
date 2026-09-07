@@ -1,6 +1,4 @@
 User-agent: *
 Allow: /
 
-# TODO: Replace https://hussnain-bashir.vercel.app with your real domain once deployed,
-# e.g. "https://hussnain.dev"
 Sitemap: https://hussnain-bashir.vercel.app/sitemap-index.xml

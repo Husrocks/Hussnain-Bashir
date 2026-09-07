@@ -38,12 +38,20 @@ const sortedProjects = allProjects.sort((a, b) => {
       description="Portfolio of Hussnain Bashir. AI/ML and Full-Stack Developer specializing in building end-to-end intelligent systems, from fine-tuning LLMs to developing Web3 apps."
       canonicalUrl={canonicalUrl}
       type="website"
+      ogImage="https://hussnain-bashir.vercel.app/og-image.jpg"
     />
     <PersonSchema 
       name="Hussnain Bashir"
       jobTitle="AI Full-Stack Developer"
       url={canonicalUrl}
     />
+    <!-- WebSite schema for sitelinks search box eligibility -->
+    <script type="application/ld+json">{JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://hussnain-bashir.vercel.app/",
+      "name": "Hussnain Bashir — Portfolio"
+    })}</script>
   </Fragment>
 
   <!-- Mobile-only Profile Card (hidden on desktop) -->

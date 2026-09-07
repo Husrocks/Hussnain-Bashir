@@ -24,18 +24,34 @@ const schema = {
   name,
   jobTitle,
   url,
+  image: 'https://hussnain-bashir.vercel.app/og-image.jpg',
   sameAs: [
-    // TODO: Replace YOUR_GITHUB_USERNAME with your GitHub handle
-    'https://github.com/YOUR_GITHUB_USERNAME',
-    // Pre-filled — update if URL changes
+    'https://github.com/Husrocks',
     'https://www.linkedin.com/in/hussnain-bashir/',
+    'https://x.com/RocksHus',
+    'https://www.instagram.com/imhussnain_/',
   ],
   knowsAbout: [
-    // TODO: Replace with your actual skills/technologies
-    'YOUR_SKILL_1',
-    'YOUR_SKILL_2',
-    'YOUR_SKILL_3',
+    'Machine Learning',
+    'Agentic AI',
+    'Full-Stack Development',
+    'Python',
+    'React',
+    'FastAPI',
+    'TypeScript',
+    'LLMs',
+    'Computer Vision',
+    'Docker',
+    'Web3',
+    'Solidity',
+    'YOLOv8',
+    'LangChain',
   ],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Lahore',
+    addressCountry: 'PK',
+  },
 };
 ---
 <script type="application/ld+json" set:html={JSON.stringify(schema, null, 2)} />

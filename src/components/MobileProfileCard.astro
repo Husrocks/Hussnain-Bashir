@@ -19,7 +19,13 @@
         />
       </div>
       
-      <h1 class="p-name">Hussnain Bashir</h1>
+      <!-- aria-hidden: desktop layout has the canonical H1; this mobile H1
+           is hidden on desktop via CSS, but both exist in the DOM for crawlers.
+           Using aria-hidden prevents duplicate H1 confusion for search engines
+           while keeping a visible heading for mobile users. -->
+      <h1 class="p-name" aria-hidden="true">Hussnain Bashir</h1>
+      <!-- Accessible name for screen readers on mobile -->
+      <p class="p-name-sr-only" aria-label="Hussnain Bashir" role="heading" aria-level="1"></p>
       <p class="p-handle">@hussnain.bashir</p>
       
       <div class="bio-list">
@@ -182,6 +188,19 @@
       color: #fff;
       margin: 0 0 0.2rem 0;
       letter-spacing: -0.02em;
+    }
+
+    /* Screen-reader-only heading — visually hidden, accessible to AT */
+    .p-name-sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .p-handle {
