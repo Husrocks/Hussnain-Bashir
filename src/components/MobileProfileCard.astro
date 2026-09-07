@@ -10,7 +10,7 @@
     <div class="main-card">
       <div class="avatar-squircle">
         <img
-          src="/images/hussnain.webp"
+          src="/images/PROFILE.webp"
           alt="Hussnain Bashir"
           class="avatar-img"
           width="160"
@@ -129,14 +129,13 @@
   }
 
   @media (max-width: 768px) {
-    /* ── Full viewport fit — no scroll ── */
+    /* ── Mobile Layout ── */
     .mobile-page {
       display: flex;
       flex-direction: column;
-      height: 100svh;
-      padding-bottom: 4.5rem; /* nav bar height */
+      min-height: 100svh; /* allow scrolling if needed, don't force stretch */
+      padding-bottom: 6rem; /* nav bar clearance */
       background: linear-gradient(160deg, #1A1325 0%, #080A10 100%);
-      overflow: hidden;
       box-sizing: border-box;
     }
 
@@ -144,39 +143,39 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
-      padding: 0 0.65rem;
-      overflow: hidden;
-      padding-top: 2.8rem;
+      gap: 0.75rem;
+      padding: 0 1rem;
+      padding-top: 3.5rem;
     }
 
     /* ── Main Profile Card ── */
     .main-card {
       background: #181C27;
       border-radius: 20px;
-      margin-top: 2.4rem;
-      padding: 2.4rem 1rem 0.6rem;
+      margin-top: 3rem;
+      padding: 3rem 1rem 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center; /* Center content vertically */
       position: relative;
       box-shadow: 0 12px 30px rgba(0,0,0,0.3);
       border: 1px solid rgba(255,255,255,0.04);
-      flex-shrink: 0;
+      flex: 1; /* Expand to fill empty vertical space */
     }
 
     /* Top overlapping avatar */
     .avatar-squircle {
       position: absolute;
-      top: -2.4rem;
+      top: -5rem;
       left: 50%;
       transform: translateX(-50%);
-      width: 72px;
-      height: 72px;
+      width: 140px;
+      height: 140px;
       background: #F5BA3F;
-      border-radius: 20px;
+      border-radius: 40px;
       overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
       border: 2px solid rgba(255,255,255,0.06);
     }
 
@@ -189,10 +188,10 @@
 
     /* Name & Handle */
     .p-name {
-      font-size: 0.95rem;
+      font-size: 1.3rem;
       font-weight: 800;
       color: #fff;
-      margin: 0 0 0.05rem 0;
+      margin: 0 0 0.15rem 0;
       letter-spacing: -0.02em;
     }
 
@@ -210,9 +209,9 @@
     }
 
     .p-handle {
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       color: #A0A5B5;
-      margin: 0 0 0.4rem 0;
+      margin: 0 0 0.6rem 0;
       font-weight: 500;
     }
 
@@ -220,24 +219,24 @@
     .bio-list {
       display: flex;
       flex-direction: column;
-      gap: 0.15rem;
+      gap: 0.25rem;
       width: 100%;
       max-width: 280px;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.6rem;
     }
 
     .bio-item {
       display: flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.4rem;
     }
 
     .bio-item .emoji {
-      font-size: 0.75rem;
+      font-size: 0.85rem;
     }
 
     .bio-item .text {
-      font-size: 0.65rem;
+      font-size: 0.72rem;
       color: #C0C4D1;
       font-weight: 500;
     }
@@ -247,51 +246,48 @@
       display: flex;
       justify-content: space-between;
       width: 100%;
-      padding-top: 0.4rem;
+      padding-top: 0.6rem;
       border-top: 1px solid rgba(255,255,255,0.05);
     }
 
     .footer-item {
       display: flex;
       align-items: center;
-      gap: 0.25rem;
-      font-size: 0.6rem;
+      gap: 0.3rem;
+      font-size: 0.68rem;
       color: #80869B;
       font-weight: 500;
     }
 
     .footer-item svg {
-      width: 10px;
-      height: 10px;
+      width: 11px;
+      height: 11px;
     }
 
-    /* ── Bento Grid — fills remaining space ── */
+    /* ── Bento Grid ── */
     .bento-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 0.7fr 1fr;
       gap: 0.5rem;
-      flex: 1;
-      min-height: 0; /* allow flex child to shrink */
+      /* Remove flex: 1 and grid-template-rows so they don't stretch */
     }
 
     .bento-card {
       background: #181C27;
-      border-radius: 18px;
+      border-radius: 14px;
       padding: 0.75rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.03);
-      transition: transform 0.2s ease;
+      border: 1px solid rgba(255,255,255,0.04);
+      transition: transform 0.15s ease;
       -webkit-tap-highlight-color: transparent;
-      overflow: hidden;
-      min-height: 0;
+      height: 85px; /* FIXED small height */
     }
 
     .bento-card:active {
-      transform: scale(0.96);
+      transform: scale(0.97);
     }
 
     .full-width {
@@ -302,50 +298,50 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
     }
 
     .main-icon {
-      width: 24px;
-      height: 24px;
+      width: 18px;
+      height: 18px;
       color: #fff;
     }
 
     .ext-icon {
-      width: 14px;
-      height: 14px;
+      width: 11px;
+      height: 11px;
       color: rgba(255,255,255,0.4);
     }
 
     .github-left {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     .follow-btn {
       background: #fff;
       color: #000;
-      font-size: 0.65rem;
+      font-size: 0.55rem;
       font-weight: 700;
-      padding: 0.2rem 0.55rem;
+      padding: 0.15rem 0.45rem;
       border-radius: 100px;
     }
 
     .bento-bottom {
       display: flex;
       flex-direction: column;
-      gap: 0.1rem;
+      gap: 0.05rem;
     }
 
     .b-title {
-      font-size: 0.82rem;
+      font-size: 0.7rem;
       font-weight: 700;
       color: #fff;
     }
 
     .b-sub {
-      font-size: 0.65rem;
+      font-size: 0.58rem;
       color: rgba(255,255,255,0.6);
       white-space: nowrap;
       overflow: hidden;
