@@ -129,49 +129,55 @@
   }
 
   @media (max-width: 768px) {
+    /* ── Full viewport fit — no scroll ── */
     .mobile-page {
-      display: block;
-      position: relative;
-      min-height: 100svh;
-      padding-bottom: 7rem;
+      display: flex;
+      flex-direction: column;
+      height: 100svh;
+      padding-bottom: 4.5rem; /* nav bar height */
       background: linear-gradient(160deg, #1A1325 0%, #080A10 100%);
+      overflow: hidden;
+      box-sizing: border-box;
     }
 
     .dashboard-container {
-      padding: 0 1rem;
+      flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.4rem;
+      padding: 0 0.65rem;
+      overflow: hidden;
+      padding-top: 2.8rem;
     }
 
     /* ── Main Profile Card ── */
     .main-card {
       background: #181C27;
-      border-radius: 32px;
-      margin-top: 6rem; /* Make room for overlapping avatar */
-      padding: 5rem 1.25rem 1.5rem;
+      border-radius: 20px;
+      margin-top: 2.4rem;
+      padding: 2.4rem 1rem 0.6rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       position: relative;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.04);
+      flex-shrink: 0;
     }
 
     /* Top overlapping avatar */
     .avatar-squircle {
       position: absolute;
-      top: -4.5rem;
+      top: -2.4rem;
       left: 50%;
       transform: translateX(-50%);
-      width: 140px;
-      height: 140px;
-      background: #F5BA3F; /* The requested yellow color */
-      border-radius: 40px;
-      padding: 0;
+      width: 72px;
+      height: 72px;
+      background: #F5BA3F;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-      border: 2px solid rgba(255,255,255,0.05);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      border: 2px solid rgba(255,255,255,0.06);
     }
 
     .avatar-img {
@@ -183,14 +189,14 @@
 
     /* Name & Handle */
     .p-name {
-      font-size: 1.6rem;
+      font-size: 0.95rem;
       font-weight: 800;
       color: #fff;
-      margin: 0 0 0.2rem 0;
+      margin: 0 0 0.05rem 0;
       letter-spacing: -0.02em;
     }
 
-    /* Screen-reader-only heading — visually hidden, accessible to AT */
+    /* Screen-reader-only heading */
     .p-name-sr-only {
       position: absolute;
       width: 1px;
@@ -204,9 +210,9 @@
     }
 
     .p-handle {
-      font-size: 0.9rem;
+      font-size: 0.65rem;
       color: #A0A5B5;
-      margin: 0 0 1.5rem 0;
+      margin: 0 0 0.4rem 0;
       font-weight: 500;
     }
 
@@ -214,70 +220,74 @@
     .bio-list {
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 0.15rem;
       width: 100%;
       max-width: 280px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.4rem;
     }
 
     .bio-item {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.35rem;
     }
 
     .bio-item .emoji {
-      font-size: 1.1rem;
+      font-size: 0.75rem;
     }
 
     .bio-item .text {
-      font-size: 0.85rem;
+      font-size: 0.65rem;
       color: #C0C4D1;
       font-weight: 500;
     }
 
-    /* Card Footer (Location & Date) */
+    /* Card Footer */
     .card-footer {
       display: flex;
       justify-content: space-between;
       width: 100%;
-      padding-top: 1.25rem;
+      padding-top: 0.4rem;
       border-top: 1px solid rgba(255,255,255,0.05);
     }
 
     .footer-item {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-      font-size: 0.75rem;
+      gap: 0.25rem;
+      font-size: 0.6rem;
       color: #80869B;
       font-weight: 500;
     }
 
     .footer-item svg {
-      width: 14px;
-      height: 14px;
+      width: 10px;
+      height: 10px;
     }
 
-    /* ── Bento Grid ── */
+    /* ── Bento Grid — fills remaining space ── */
     .bento-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
+      grid-template-rows: 1fr 0.7fr 1fr;
+      gap: 0.5rem;
+      flex: 1;
+      min-height: 0; /* allow flex child to shrink */
     }
 
     .bento-card {
       background: #181C27;
-      border-radius: 24px;
-      padding: 1.25rem;
+      border-radius: 18px;
+      padding: 0.75rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       text-decoration: none;
-      min-height: 130px;
       border: 1px solid rgba(255,255,255,0.03);
       transition: transform 0.2s ease;
       -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+      min-height: 0;
     }
 
     .bento-card:active {
@@ -286,89 +296,76 @@
 
     .full-width {
       grid-column: 1 / -1;
-      min-height: 120px;
     }
 
     .bento-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
 
     .main-icon {
-      width: 32px;
-      height: 32px;
+      width: 24px;
+      height: 24px;
       color: #fff;
     }
 
     .ext-icon {
-      width: 18px;
-      height: 18px;
+      width: 14px;
+      height: 14px;
       color: rgba(255,255,255,0.4);
     }
 
     .github-left {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
     .follow-btn {
       background: #fff;
       color: #000;
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       font-weight: 700;
-      padding: 0.3rem 0.7rem;
+      padding: 0.2rem 0.55rem;
       border-radius: 100px;
     }
 
     .bento-bottom {
       display: flex;
       flex-direction: column;
-      gap: 0.15rem;
+      gap: 0.1rem;
     }
 
     .b-title {
-      font-size: 0.95rem;
+      font-size: 0.82rem;
       font-weight: 700;
       color: #fff;
     }
 
     .b-sub {
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       color: rgba(255,255,255,0.6);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* Specific Card Colors */
-    .bento-email {
-      background: #1E2841; /* Dark blue */
-    }
-    
-    .bento-linkedin {
-      background: #0A66C2; /* LinkedIn Blue */
-    }
-    .bento-linkedin .b-sub, .bento-linkedin .ext-icon {
-      color: rgba(255,255,255,0.8);
-    }
-
-    .bento-github {
-      background: #111319;
-    }
-
+    /* Card Colors */
+    .bento-email  { background: #1E2841; }
+    .bento-linkedin { background: #0A66C2; }
+    .bento-linkedin .b-sub,
+    .bento-linkedin .ext-icon { color: rgba(255,255,255,0.8); }
+    .bento-github { background: #111319; }
     .bento-twitter {
-      background: #000000;
+      background: #000;
       border: 1px solid rgba(255,255,255,0.1);
     }
-
     .bento-instagram {
       background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
     }
-    .bento-instagram .b-sub, .bento-instagram .ext-icon {
-      color: rgba(255,255,255,0.8);
-    }
+    .bento-instagram .b-sub,
+    .bento-instagram .ext-icon { color: rgba(255,255,255,0.8); }
   }
 </style>
